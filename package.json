@@ -7,14 +7,20 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "db:generate": "drizzle-kit generate --config=drizzle.config.ts",
-    "db:migrate": "drizzle-kit migrate --config=drizzle.config.ts"
+    "db-prod:generate": "drizzle-kit generate --config=drizzle-prod.config.ts",
+    "db-prod:migrate": "drizzle-kit migrate --config=drizzle-prod.config.ts",
+    "db-prod:rollback": "drizzle-kit rollback --config=drizzle-prod.config.ts",
+    "db-dev:generate": "NODE_ENV=development drizzle-kit generate --config=drizzle-dev.config.ts",
+    "db-dev:migrate": "NODE_ENV=development drizzle-kit migrate --config=drizzle-dev.config.ts",
+    "db-dev:rollback": "NODE_ENV=development drizzle-kit rollback --config=drizzle-dev.config.ts"
   },
   "dependencies": {
+    "@neondatabase/serverless": "^0.10.3",
     "better-sqlite3": "^11.5.0",
     "dotenv": "^16.4.5",
     "drizzle-orm": "^0.36.4",
     "next": "15.0.3",
+    "pg": "^8.13.1",
     "react": "19.0.0-rc-66855b96-20241106",
     "react-dom": "19.0.0-rc-66855b96-20241106"
   },

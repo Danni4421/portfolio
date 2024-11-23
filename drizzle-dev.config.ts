@@ -7,7 +7,9 @@ import { defineConfig } from "drizzle-kit";
  * Environment variables are loaded from a .env file in the root of the project.
  * This file is not committed to the repository.
  */
-config({ path: ".env" });
+config({ path: ".env.development" });
+
+console.log(process.env.DATABASE_URL);
 
 /**
  * Define the configuration for the Drizzle Kit
