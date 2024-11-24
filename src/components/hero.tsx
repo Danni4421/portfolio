@@ -78,7 +78,7 @@ export default function Hero() {
           onClick={() => openModal()}
           className="px-6 py-3 bg-gray-200 text-black rounded-full hover:bg-gray-300 transition-colors"
         >
-          Let's build something together
+          Let&apos;s build something together
         </button>
         <button
           onClick={() => router.push("/not-available")}
@@ -92,7 +92,7 @@ export default function Hero() {
       <dialog id="contact_modal" className="modal">
         <div className="modal-box w-11/12 max-w-2xl">
           <div className="text-center mb-6">
-            <h3 className="font-bold text-2xl mb-2">Let's Connect!</h3>
+            <h3 className="font-bold text-2xl mb-2">Let&apos;s Connect!</h3>
             <p className="text-gray-400">
               Feel free to reach out through any of these platforms
             </p>

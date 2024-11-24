@@ -1,6 +1,7 @@
 "use client";
 import { useModal } from "@/hooks/useModal";
 import { Project } from "@/types";
+import Image from "next/image";
 import { IoMdClose } from "react-icons/io";
 
 interface ProjectCardProps {
@@ -54,8 +55,10 @@ export default function ProjectCard({ project }: ProjectCardProps) {
             <div className="carousel carousel-center bg-neutral rounded-box w-full space-x-4 p-4">
               {project.files.map((file, index) => (
                 <div className="carousel-item w-full" key={index}>
-                  <img
+                  <Image
                     src={file}
+                    width={800}
+                    height={300}
                     className="rounded-box w-full object-contain"
                     alt={`Project image ${index + 1}`}
                     onClick={() => window.open(file, "_blank")}

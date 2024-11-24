@@ -1,5 +1,3 @@
-import { useState } from "react";
-
 export const useModal = (targetModal: string = "main_modal") => {
   const openModal = () => {
     const modal = document.getElementById(targetModal) as HTMLDialogElement;
@@ -8,5 +6,3 @@ export const useModal = (targetModal: string = "main_modal") => {
 
   return { openModal };
 };
-
-interface ModalContent {}

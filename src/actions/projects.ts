@@ -7,6 +7,9 @@ export const getProjects = async (): Promise<Project[]> => {
     const projects = await db.select().from(project).execute();
     return projects;
   } catch (error) {
-    return [];
+    if (error instanceof Error) {
+      throw new Error("An error occurred while fetching projects");
+    }
   }
+  return [];
 };

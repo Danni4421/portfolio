@@ -22,9 +22,11 @@ export function AchievementCard({ achievement }: AchievementCardProps) {
           <div className="w-12 h-12 flex-shrink-0 rounded-full bg-gray-300">
             <div className="flex items-center justify-center h-full text-base-100 text-bold font-serif text-xl">
               {!!achievement.icon ? (
-                <img
+                <Image
                   src={achievement.icon}
                   alt={achievement.title}
+                  width={48}
+                  height={48}
                   className="w-full h-full rounded-full object-cover"
                 />
               ) : (
@@ -67,9 +69,11 @@ export function AchievementCard({ achievement }: AchievementCardProps) {
             <div className="w-12 h-12 flex-shrink-0 rounded-full bg-gray-300">
               <div className="flex items-center justify-center h-full text-base-100 text-bold font-serif text-xl">
                 {!!achievement.icon ? (
-                  <img
+                  <Image
                     src={achievement.icon}
                     alt={achievement.title}
+                    width={48}
+                    height={48}
                     className="w-full h-full rounded-full object-cover"
                   />
                 ) : (

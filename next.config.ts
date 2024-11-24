@@ -14,6 +14,10 @@ const nextConfig: NextConfig = {
       },
     },
   },
+
+  images: {
+    domains: ["ik.imagekit.io", "secure.gravatar.com"],
+  },
 };
 
 export default nextConfig;

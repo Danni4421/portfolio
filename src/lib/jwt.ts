@@ -43,6 +43,12 @@ export const verifyToken = (token: string): string | object | null => {
   try {
     return jwt.verify(token, JWT_SECRET!);
   } catch (error) {
-    return null;
+    if (error instanceof jwt.TokenExpiredError) {
+      return "Token expired";
+    } else if (error instanceof jwt.JsonWebTokenError) {
+      return "Invalid token";
+    }
   }
+
+  return null;
 };

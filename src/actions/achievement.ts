@@ -14,6 +14,10 @@ export const getAchievements = async (): Promise<Achievement[]> => {
 
     return achievements;
   } catch (error) {
-    return [];
+    if (error instanceof Error) {
+      throw new Error("An error occurred while fetching achievements");
+    }
   }
+
+  return [];
 };
