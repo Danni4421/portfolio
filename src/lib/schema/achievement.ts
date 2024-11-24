@@ -13,12 +13,13 @@ export const achievementType = pgEnum("type", [
 ]);
 
 export const achievement = table("achievement", {
-  id: integer().primaryKey(),
-  image: text(),
-  title: text(),
-  description: text(),
-  type: achievementType(),
-  dateAchieve: timestamp("date_achieve"),
+  id: integer().primaryKey().notNull(),
+  icon: text(),
+  file: text().notNull(),
+  title: text().notNull(),
+  description: text().notNull(),
+  type: achievementType().notNull(),
+  dateAchieve: timestamp("date_achieve").notNull(),
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at")
     .defaultNow()

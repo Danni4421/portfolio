@@ -7,12 +7,12 @@ import {
 } from "drizzle-orm/pg-core";
 
 export const workExperience = table("work_experience", {
-  id: integer().primaryKey(),
+  id: integer().primaryKey().notNull(),
   logo: text(),
-  title: text(),
-  place: text(),
-  isDone: boolean().default(false),
-  startDate: timestamp("start_date"),
+  title: text().notNull(),
+  place: text().notNull(),
+  isDone: boolean().notNull().default(false),
+  startDate: timestamp("start_date").notNull(),
   endDate: timestamp("end_date"),
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at")

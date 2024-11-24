@@ -6,13 +6,13 @@ import {
 } from "drizzle-orm/pg-core";
 
 export const workExperienceProject = table("work_experience_project", {
-  id: integer().primaryKey(),
-  wo_id: integer(),
-  projectImages: text().array(),
-  projectName: text(),
-  description: text(),
-  startDate: timestamp("start_date"),
-  endDate: timestamp("end_date"),
+  id: integer().primaryKey().notNull(),
+  wo_id: integer().notNull(),
+  projectImages: text().array().notNull(),
+  projectName: text().notNull(),
+  description: text().notNull(),
+  startDate: timestamp("start_date").notNull(),
+  endDate: timestamp("end_date").notNull(),
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at")
     .defaultNow()

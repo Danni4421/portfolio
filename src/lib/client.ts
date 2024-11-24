@@ -1,5 +1,4 @@
 import { config } from "dotenv";
-import { NeonHttpDatabase } from "drizzle-orm/neon-http";
 import { neon } from "@neondatabase/serverless";
 import { drizzle as neonClient } from "drizzle-orm/neon-http";
 import { drizzle as pgClient } from "drizzle-orm/postgres-js";
@@ -13,12 +12,9 @@ import * as schema from "@/lib/schema";
  * Environment variables are loaded from a .env file in the root of the project.
  * This file is not committed to the repository.
  */
-config({
-  path:
-    process.env.NODE_ENV === "production"
-      ? ".env.production"
-      : ".env.development",
-});
+const envFilePath =
+  process.env.APP_ENV === "production" ? ".env.production" : ".env.development";
+config({ path: envFilePath });
 
 /**
  * Create a production database client
@@ -48,7 +44,7 @@ const createDevelopmentClient = () => {
  * connect to the production database. Otherwise, the client will connect to the development database.
  */
 const db =
-  process.env.NODE_ENV === "production"
+  process.env.APP_ENV === "production"
     ? createProductionClient()
     : createDevelopmentClient();
 
