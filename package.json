@@ -24,6 +24,7 @@
     "@types/jsonwebtoken": "^9.0.7",
     "bcrypt": "^5.1.1",
     "better-sqlite3": "^11.5.0",
+    "canvas": "^2.11.2",
     "dotenv": "^16.4.5",
     "drizzle-orm": "^0.36.4",
     "jsonwebtoken": "^9.0.2",
