@@ -13,6 +13,11 @@ const nextConfig: NextConfig = {
         canvas: "./empty-module.ts",
       },
     },
+    cacheLife: {
+      default: {
+        stale: 60,
+      },
+    },
   },
 
   images: {
