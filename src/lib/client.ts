@@ -12,6 +12,8 @@ import * as schema from "@/lib/schema";
  * Environment variables are loaded from a .env file in the root of the project.
  * This file is not committed to the repository.
  */
+config({path: ['.env', '.env.local']});
+
 const envFilePath =
   process.env.APP_ENV === "production" ? ".env.production" : ".env.development";
 config({ path: envFilePath });
