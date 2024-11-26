@@ -71,7 +71,7 @@ export default function ProjectCard({ project }: ProjectCardProps) {
           <div className="prose max-w-none">
             <p className="text-base">{project.description}</p>
             <p className="text-gray-500 mt-4 text-sm">
-              {`I complete this on ${new Date(
+              {`I ${project.isDone ? "have complete on" : "develop"} ${new Date(
                 project.startDate
               ).toLocaleDateString("en-EN", {
                 year: "numeric",
