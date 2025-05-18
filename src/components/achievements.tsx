@@ -1,6 +1,8 @@
 import { getAchievements } from "@/actions/achievement";
 import { AchievementCard } from "./achievement-card";
 
+export const dynamic = "force-dynamic";
+
 export default async function Achievements() {
   const achievements = await getAchievements();
 
