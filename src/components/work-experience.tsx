@@ -1,6 +1,8 @@
 import { getWorkExperiences } from "@/actions/work-experience";
 import WorkExperienceCard from "@/components/work-experience-card";
 
+export const dynamic = "force-dynamic";
+
 export default async function WorkExperiences() {
   const workExperiences = await getWorkExperiences();
   return (
