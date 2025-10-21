@@ -2,8 +2,17 @@
 	import Header from '@/features/common/components/header.svelte';
 	import type { Achievement } from '../types';
 	import AchievementCard from './achievement-card.svelte';
+	import { onMount } from 'svelte';
+	import { getAchievements } from '../services/achievement';
 
-	export let achievements: Array<Achievement>;
+	let loading = true;
+	let achievements: Array<Achievement> = [];
+
+	onMount(async () => {
+		const { achievements: fetchedAchievements } = await getAchievements();
+		achievements = fetchedAchievements;
+		loading = false;
+	});
 </script>
 
 <section class="space-y-20 px-4 py-4 md:px-16 md:py-12 lg:px-24">

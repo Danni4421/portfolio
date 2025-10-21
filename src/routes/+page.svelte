@@ -1,10 +1,8 @@
 <script>
 	import Navbar from '@/lib/components/ui/navbar/navbar.svelte';
 	import Hero from '@/features/home/components/hero.svelte';
-	import Achievements from '@/features/achievement/components/achivements.svelte';
-
-	import { achievements } from '@/features/achievement/constants';
 	import TechStackList from '@/features/tech-stack/components/tech-stack-list.svelte';
+	import Achievements from '@/features/achievement/components/achivements.svelte';
 </script>
 
 <svelte:head>
@@ -19,6 +17,6 @@
 	<div class="mt-20">
 		<Hero />
 		<TechStackList />
-		<Achievements {achievements} />
+		<Achievements />
 	</div>
 </main>
