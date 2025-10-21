@@ -1,5 +1,6 @@
 export interface TechStack {
 	id: number;
 	name: string;
-	iconUrl?: string;
+	icon_url: string;
+	created_at: Date;
 }

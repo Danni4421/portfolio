@@ -1,9 +1,28 @@
 <script lang="ts">
+	import { onMount } from 'svelte';
 	import Header from '@/features/common/components/header.svelte';
-	import { techStacks } from '../constants';
+	import { getTechStacks } from '../services/tech-stack';
 	import TechStackCard from './tech-stack-card.svelte';
+	import type { TechStack } from '../types';
+	import TechStackSkeletonList from './tech-stack-skeleton.svelte';
 
-	const stacks = [...techStacks, ...techStacks, ...techStacks].map((tech, i) => ({
+	let techStacks: TechStack[] = [];
+	let loading = true;
+	let error: string | null = null;
+
+	onMount(async () => {
+		try {
+			const { stacks } = await getTechStacks();
+			techStacks = stacks;
+		} catch (err) {
+			error = err instanceof Error ? err.message : 'Failed to load tech stacks';
+			console.error(error);
+		} finally {
+			loading = false;
+		}
+	});
+
+	$: stacks = [...techStacks, ...techStacks, ...techStacks].map((tech, i) => ({
 		...tech,
 		uniqueId: `${tech.id}-${i}`
 	}));
@@ -15,11 +34,25 @@
 		description="The slide show below showcases my tech stack, It's not a lot but I'm constantly learning and improving."
 	/>
 
-	<div class="animate-scroll flex gap-16">
-		{#each stacks as tech (tech.uniqueId)}
-			<TechStackCard stack={tech} />
-		{/each}
-	</div>
+	{#if loading}
+		<div class="flex justify-center py-8">
+			<TechStackSkeletonList />
+		</div>
+	{:else if error}
+		<div class="flex justify-center py-8">
+			<p class="text-red-500">Error: {error}</p>
+		</div>
+	{:else if stacks.length > 0}
+		<div class="animate-scroll flex gap-16">
+			{#each stacks as tech (tech.uniqueId)}
+				<TechStackCard stack={tech} />
+			{/each}
+		</div>
+	{:else}
+		<div class="flex justify-center py-8">
+			<p class="text-gray-500">No tech stacks available</p>
+		</div>
+	{/if}
 </section>
 
 <style>
@@ -33,7 +66,7 @@
 	}
 
 	:global(.animate-scroll) {
-		animation: scroll 40s linear infinite;
+		animation: scroll 30s linear infinite;
 		will-change: transform;
 		display: flex;
 	}
