@@ -5,38 +5,28 @@
 	import { Menu } from '@lucide/svelte';
 
 	let showMobileNav = false;
+
+	const items = [
+		{ name: 'Home', href: '/' },
+		{ name: 'Achievements', href: '/' },
+		{ name: 'Projects', href: '/' },
+		{ name: 'Testimonials', href: '/' }
+	];
 </script>
 
 <nav
-	class="flex items-center justify-between border-b-[0.5px] border-neutral-200 px-8 py-3 text-neutral-800 dark:border-neutral-700 dark:bg-zinc-900 dark:text-neutral-200"
+	class="fixed top-0 left-0 z-50 flex min-w-screen items-center justify-between border-b-[0.5px] border-neutral-200 bg-white px-8 py-3 text-neutral-800 dark:border-neutral-700 dark:bg-zinc-900 dark:text-neutral-200"
 >
 	<NavBrand alt="Aji Hamdani Ahmad" brandName="Aji" />
 
 	<ul class="m-0 hidden list-none gap-6 p-0 md:flex">
-		<li class="flex items-center">
-			<NavLink
-				href="/"
-				class="border-b-2 border-transparent font-medium transition-colors duration-200 hover:border-sky-400 hover:text-gray-800"
-			>
-				Home
-			</NavLink>
-		</li>
-		<li class="flex items-center">
-			<NavLink
-				href="/"
-				class="border-b-2 border-transparent font-medium transition-colors duration-200 hover:border-sky-400 hover:text-gray-800"
-			>
-				Services
-			</NavLink>
-		</li>
-		<li class="flex items-center">
-			<NavLink
-				href="/"
-				class="border-b-2 border-transparent font-medium transition-colors duration-200 hover:border-sky-400 hover:text-gray-800"
-			>
-				Projects
-			</NavLink>
-		</li>
+		{#each items as item}
+			<li>
+				<NavLink href={item.href} class="font-medium transition-colors hover:text-green-400">
+					{item.name}
+				</NavLink>
+			</li>
+		{/each}
 	</ul>
 
 	<Button variant="default" class="hidden cursor-pointer transition-opacity md:flex"
