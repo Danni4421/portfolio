@@ -6,7 +6,7 @@
 
 <div class="flex min-w-24 flex-col items-center">
 	<img
-		src={stack.iconUrl ?? 'https://via.placeholder.com/150'}
+		src={stack.icon_url ?? 'https://via.placeholder.com/150'}
 		alt="{stack.name} icon"
 		class="mb-4 h-12 w-auto object-contain grayscale transition duration-300 hover:grayscale-0"
 	/>

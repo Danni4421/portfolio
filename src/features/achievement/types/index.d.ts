@@ -1,7 +1,8 @@
 export interface Achievement {
 	id: string;
 	title: string;
-	description: string;
-	dateAchieved: Date;
-	thumbnailUrl?: string;
+	story?: string;
+	description?: string;
+	image?: string;
+	created_at: Date;
 }
