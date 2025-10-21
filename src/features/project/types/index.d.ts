@@ -1,8 +1,9 @@
 export interface Project {
 	id: number;
-	name: string;
+	title: string;
+	slug: string;
 	description?: string;
-	image?: string;
+	thumbnail?: string;
 	story?: string;
 	tags?: string[];
 	repository_url?: string;

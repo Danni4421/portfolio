@@ -11,8 +11,8 @@
 	<!-- Project Image -->
 	<div class="relative h-64 w-full overflow-hidden bg-gray-100">
 		<img
-			src={project.image ?? 'https://via.placeholder.com/600x400'}
-			alt={project.name}
+			src={project.thumbnail ?? 'https://via.placeholder.com/600x400'}
+			alt={project.title}
 			class="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
 		/>
 		<!-- Overlay Badge -->
@@ -29,14 +29,16 @@
 
 	<!-- Content -->
 	<div class="space-y-4 py-6">
-		<h3 class="text-xl font-bold text-gray-900">{project.name}</h3>
+		<h3 class="text-xl font-bold text-gray-900">{project.title}</h3>
 		<p class="line-clamp-2 max-w-lg text-sm leading-relaxed text-gray-600">
 			{project.description}
 		</p>
 
 		<div class="flex gap-3 pt-2">
 			{#if project.story}
-				<ProjectLink url={project.story} icon={ArrowRight}>Read Project Story</ProjectLink>
+				<ProjectLink url={`/projects/${project.slug}`} icon={ArrowRight}
+					>Read Project Story</ProjectLink
+				>
 			{/if}
 
 			{#if project.repository_url}
