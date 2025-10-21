@@ -4,6 +4,7 @@
 	import TechStackList from '@/features/tech-stack/components/tech-stack-list.svelte';
 	import Achievements from '@/features/achievement/components/achivements.svelte';
 	import ContactMe from '@/features/contact/components/contact-me.svelte';
+	import ProjectList from '@/features/project/components/project-list.svelte';
 </script>
 
 <svelte:head>
@@ -18,6 +19,7 @@
 	<div class="mt-20">
 		<Hero />
 		<TechStackList />
+		<ProjectList />
 		<Achievements />
 		<ContactMe />
 	</div>

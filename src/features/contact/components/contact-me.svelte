@@ -40,7 +40,7 @@
 	}
 </script>
 
-<section class="px-24 py-20">
+<section class="relative space-y-20 px-4 py-4 md:px-16 md:py-12 lg:px-24">
 	<div class="mx-auto max-w-2xl rounded-lg border border-gray-200 bg-white p-8">
 		<!-- Header -->
 		<div class="mb-12 space-y-2">
