@@ -61,12 +61,12 @@
 			transform: translateX(0);
 		}
 		100% {
-			transform: translateX(calc(-33.33% * 2));
+			transform: translateX(calc(-33.33% * 10));
 		}
 	}
 
 	:global(.animate-scroll) {
-		animation: scroll 30s linear infinite;
+		animation: scroll 40s linear infinite;
 		will-change: transform;
 		display: flex;
 	}
