@@ -1,13 +1,19 @@
 <script lang="ts">
 	import Navbar from '@/lib/components/ui/navbar/navbar.svelte';
 	import type { Project } from '@/features/project/types';
+	import Markdown from 'svelte-markdown';
+	import type { TokensList } from 'marked';
 
 	interface PageData {
 		project: Project;
-		storyHtml: string;
+		storyMarkdown?: string;
+		storyTokens?: TokensList;
 	}
 
 	let { data }: { data: PageData } = $props();
+
+	const markdownSource = $derived(data.storyTokens ?? data.storyMarkdown ?? '');
+	const markdownOptions = $derived({ gfm: true, breaks: true });
 </script>
 
 <svelte:head>
@@ -35,12 +41,12 @@
 				/>
 			{/if}
 
-			{#if data.storyHtml}
-				<div class="prose prose-lg dark:prose-invert max-w-none">
-					{@html data.storyHtml}
-				</div>
-			{:else}
-				<p class="text-gray-600">No story available</p>
+			{#if markdownSource}
+				<Markdown
+					class="prose dark:prose-invert max-w-none"
+					source={markdownSource}
+					options={markdownOptions}
+				/>
 			{/if}
 		</div>
 	</section>

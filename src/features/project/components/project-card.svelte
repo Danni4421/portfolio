@@ -9,7 +9,9 @@
 
 <div class="group rounded-2xl transition-all duration-300">
 	<!-- Project Image -->
-	<div class="relative h-64 w-full overflow-hidden bg-gray-100">
+	<div
+		class="relative aspect-video h-auto max-h-[650px] w-full overflow-hidden rounded-xl bg-gray-100"
+	>
 		<img
 			src={project.thumbnail ?? 'https://via.placeholder.com/600x400'}
 			alt={project.title}
