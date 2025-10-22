@@ -30,7 +30,6 @@
 		"@vitest/browser": "^3.2.4",
 		"bits-ui": "^2.11.0",
 		"clsx": "^2.1.1",
-		"drizzle-kit": "^0.30.6",
 		"eslint": "^9.38.0",
 		"eslint-config-prettier": "^10.1.8",
 		"eslint-plugin-svelte": "^3.12.5",
@@ -54,7 +53,6 @@
 	"dependencies": {
 		"@neondatabase/serverless": "^0.10.4",
 		"@supabase/supabase-js": "^2.76.1",
-		"drizzle-orm": "^0.40.1",
 		"marked": "^16.4.1",
 		"mdsvex": "^0.12.6",
 		"remark-gfm": "^4.0.0",
