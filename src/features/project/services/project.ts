@@ -5,7 +5,17 @@ export const getRecentProjects = async (): Promise<{ projects: Array<Project> }>
 	try {
 		const { data } = await supabase
 			.from('projects')
-			.select()
+			.select(
+				`
+		    *,
+				project_teams (
+				  id,
+					name,
+					is_man,
+					href
+				)
+			`
+			)
 			.order('created_at', { ascending: false })
 			.limit(3);
 
@@ -17,7 +27,18 @@ export const getRecentProjects = async (): Promise<{ projects: Array<Project> }>
 
 export const getProjectBySlug = async (slug: string): Promise<{ project: Project | null }> => {
 	try {
-		const { data } = await supabase.from('projects').select().eq('slug', slug).single();
+		const { data } = await supabase
+			.from('projects')
+			.select(
+				`
+		      *,
+  				project_teams (
+  				  id, name, is_man, href
+  				)
+		`
+			)
+			.eq('slug', slug)
+			.single();
 		return { project: data as Project };
 	} catch {
 		return { project: null };

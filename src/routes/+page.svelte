@@ -15,12 +15,9 @@
 </svelte:head>
 
 <main class="grid-pattern min-h-screen">
-	<Navbar />
-	<div class="mt-20">
-		<Hero />
-		<TechStackList />
-		<ProjectList />
-		<Achievements />
-		<ContactMe />
-	</div>
+	<Hero />
+	<TechStackList />
+	<ProjectList />
+	<Achievements />
+	<ContactMe />
 </main>

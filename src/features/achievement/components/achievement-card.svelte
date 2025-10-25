@@ -5,9 +5,9 @@
 </script>
 
 <div
-	class="flex cursor-pointer flex-col-reverse justify-between rounded-2xl border border-gray-200 bg-white p-8 transition hover:shadow-sm md:flex-row"
+	class="flex cursor-pointer flex-col-reverse justify-between gap-4 rounded-2xl border border-gray-200 bg-white p-8 transition hover:shadow-sm md:flex-row"
 >
-	<div class="flex flex-col justify-between">
+	<div class="flex flex-col justify-between gap-4">
 		<div class="max-w-2xl space-y-4">
 			<p class="text-3xl font-semibold text-gray-900">
 				{achievement.title}

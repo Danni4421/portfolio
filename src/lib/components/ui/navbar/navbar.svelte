@@ -8,9 +8,9 @@
 
 	const items = [
 		{ name: 'Home', href: '/' },
-		{ name: 'Achievements', href: '/' },
-		{ name: 'Projects', href: '/' },
-		{ name: 'Testimonials', href: '/' }
+		{ name: 'Achievements', href: '/achievements' },
+		{ name: 'Works', href: '/works' },
+		{ name: 'Testimonials', href: '/testimonials' }
 	];
 </script>
 

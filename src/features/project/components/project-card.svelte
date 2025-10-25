@@ -32,7 +32,7 @@
 	<!-- Content -->
 	<div class="space-y-4 py-6">
 		<h3 class="text-xl font-bold text-gray-900">{project.title}</h3>
-		<p class="line-clamp-2 max-w-lg text-sm leading-relaxed text-gray-600">
+		<p class="line-clamp-2 max-w-lg text-lg leading-relaxed text-gray-600">
 			{project.description}
 		</p>
 
