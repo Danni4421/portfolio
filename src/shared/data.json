@@ -1,0 +1,124 @@
+{
+  "achievements": [
+    {
+      "id": "1",
+      "title": "Started Programming",
+      "description": "The beginning of a long journey.",
+      "source_logo_url": "",
+      "redirect_url": "https://example.com/start",
+      "created_at": "2024-01-01T00:00:00Z",
+      "updated_at": "2024-01-01T00:00:00Z",
+      "deleted_at": null,
+      "resources": []
+    }
+  ],
+  "projects": [
+    {
+      "id": "project-uuid-v4",
+      "title": "Developer Portfolio Website",
+      "description": "Premium personal website build.",
+      "thumbnail_url": "",
+      "created_at": "2026-07-26T12:00:00.000Z",
+      "updated_at": "2026-07-26T12:00:00.000Z",
+      "deleted_at": null,
+      "stories": [
+        {
+          "id": "story-uuid-v4",
+          "project_id": "project-uuid-v4",
+          "content": "Designing the database schemas for high performance.",
+          "author": ["Aji", "Antigravity"],
+          "created_at": "2026-07-26T12:00:00.000Z"
+        }
+      ],
+      "tech_stacks": [
+        {
+          "id": "b5f01a28-57cc-4c05-bb02-4627cd8422bd",
+          "name": "TypeScript",
+          "image_logo": "",
+          "redirect_url": "https://typescriptlang.org",
+          "sort_order": 1,
+          "created_at": "2026-07-26T12:00:00.000Z",
+          "updated_at": "2026-07-26T12:00:00.000Z",
+          "deleted_at": null
+        }
+      ],
+      "images": [
+        {
+          "id": "project-img-uuid-v4",
+          "project_id": "project-uuid-v4",
+          "image_url": "",
+          "created_at": "2026-07-26T12:00:00.000Z",
+          "updated_at": "2026-07-26T12:00:00.000Z",
+          "deleted_at": null
+        }
+      ],
+      "resources": [
+        {
+          "id": "project-res-uuid-v4",
+          "project_id": "project-uuid-v4",
+          "resource_url": "https://github.com/ajikkk/portfolio",
+          "type": "repository",
+          "title": "GitHub Repository",
+          "created_at": "2026-07-26T12:00:00.000Z",
+          "updated_at": "2026-07-26T12:00:00.000Z",
+          "deleted_at": null
+        }
+      ]
+    }
+  ],
+  "techStacks": [
+    {
+      "id": "ts-1",
+      "name": "TypeScript",
+      "image_logo": "",
+      "redirect_url": "https://typescriptlang.org",
+      "created_at": "2024-01-01T00:00:00Z",
+      "updated_at": "2024-01-01T00:00:00Z",
+      "deleted_at": null
+    }
+  ],
+  "workExperiences": [
+    {
+      "id": "work-1",
+      "title": "Lead Full-Stack Engineer",
+      "description": "Google Antigravity | Jan 2025 - Present",
+      "company_url": "",
+      "redirect_url": "https://google.com",
+      "start_date": "2025-01-01T00:00:00.000Z",
+      "end_date": null,
+      "job_descriptions": [
+        {
+          "id": "desc-1",
+          "work_experience_id": "work-1",
+          "description": "Architected high-performance serverless backends handling millions of requests with sub-10ms latency."
+        },
+        {
+          "id": "desc-2",
+          "work_experience_id": "work-1",
+          "description": "Designed modern dashboard features with dynamic animations and fully custom UI kits."
+        }
+      ]
+    },
+    {
+      "id": "work-2",
+      "title": "Frontend Engineer",
+      "description": "Cloudflare Systems | Jun 2023 - Dec 2024",
+      "company_url": "",
+      "redirect_url": "https://cloudflare.com",
+      "start_date": "2023-06-01T00:00:00.000Z",
+      "end_date": "2024-12-31T23:59:59.000Z",
+      "job_descriptions": [
+        {
+          "id": "desc-3",
+          "work_experience_id": "work-2",
+          "description": "Built edge-optimized web applications with modern framework architectures (Next.js/React)."
+        },
+        {
+          "id": "desc-4",
+          "work_experience_id": "work-2",
+          "description": "Optimized Core Web Vitals to achieve 100/100 Lighthouse performance scores."
+        }
+      ]
+    }
+  ]
+}
