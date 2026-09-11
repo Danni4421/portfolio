@@ -1,5 +1,4 @@
 // ponytail: separate project external resources manager dialog component
-import * as React from "react";
 import { useState } from "react";
 import { Loader2, Trash2, ExternalLink } from "lucide-react";
 import { Button } from "@/shared/ui/button";
@@ -15,6 +14,7 @@ import {
 import { apiClient } from "@/shared/api/client";
 import { Effect } from "effect";
 import { useToast } from "@/shared/ui/toast";
+import type { Project } from "@/entities/project/model/types";
 
 interface ProjectResource {
   id: string;
@@ -22,12 +22,6 @@ interface ProjectResource {
   resource_url: string;
   type: string;
   title: string;
-}
-
-interface Project {
-  id: string;
-  title: string;
-  resources: ProjectResource[];
 }
 
 interface ProjectResourcesDrawerProps {

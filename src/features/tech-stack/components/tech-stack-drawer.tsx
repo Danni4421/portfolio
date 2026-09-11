@@ -1,5 +1,5 @@
 // ponytail: separate tech stack edit/create dialog component
-import * as React from "react";
+
 import { Loader2 } from "lucide-react";
 import { Button } from "@/shared/ui/button";
 import { Label } from "@/shared/ui/label";

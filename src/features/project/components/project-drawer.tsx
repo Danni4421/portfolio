@@ -1,8 +1,6 @@
-// ponytail: separate project edit/create dialog component
-import * as React from "react";
 import { Loader2 } from "lucide-react";
-import { Button } from "@/shared/ui/button";
 import { Label } from "@/shared/ui/label";
+import { Button } from "@/shared/ui/button";
 import {
   Dialog,
   DialogContent,
@@ -13,13 +11,7 @@ import {
 import { useProjectForm } from "@/features/project/hooks/use-project-form";
 import { FormTextField, FormTextAreaField } from "@/shared/ui/form";
 import { FileUploader } from "@/shared/ui/file-uploader";
-
-interface Project {
-  id: string;
-  title: string;
-  description: string;
-  thumbnail_url: string;
-}
+import type { Project } from "@/entities/project/model/types";
 
 interface ProjectDrawerProps {
   open: boolean;

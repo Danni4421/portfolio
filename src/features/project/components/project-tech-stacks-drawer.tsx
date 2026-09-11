@@ -1,6 +1,5 @@
 // ponytail: separate project tech stacks manager dialog component
-import * as React from "react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Loader2, Trash2, Layers } from "lucide-react";
 import { Button } from "@/shared/ui/button";
 import { Label } from "@/shared/ui/label";
@@ -14,18 +13,13 @@ import {
 import { apiClient } from "@/shared/api/client";
 import { Effect } from "effect";
 import { useToast } from "@/shared/ui/toast";
+import type { Project } from "@/entities/project/model/types";
 
 interface TechStack {
   id: string;
   name: string;
   image_logo: string;
   redirect_url: string;
-}
-
-interface Project {
-  id: string;
-  title: string;
-  tech_stacks: TechStack[];
 }
 
 interface ProjectTechStacksDrawerProps {
@@ -49,7 +43,7 @@ export function ProjectTechStacksDrawer({
   const [selectedStackId, setSelectedStackId] = useState("");
   const [stackLoading, setStackLoading] = useState(false);
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (allStacks.length > 0 && !selectedStackId) {
       setSelectedStackId(allStacks[0].id);
     }

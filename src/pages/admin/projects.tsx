@@ -1,6 +1,6 @@
 // ponytail: projects crud page separated from unified dashboard layout
 import { useState, useEffect } from "react";
-import { Plus, Edit2, Trash2, PlusCircle } from "lucide-react";
+import { Plus, Edit2, Trash2 } from "lucide-react";
 import { Button } from "@/shared/ui/button";
 import { apiClient } from "@/shared/api/client";
 import { Effect } from "effect";
@@ -20,6 +20,7 @@ import {
   TableCell,
 } from "@/components/ui/table";
 import { Skeleton } from "@/shared/ui/skeleton";
+import type { Project } from "@/entities/project/model/types";
 
 interface ApiResponse<T> {
   success: boolean;
@@ -32,39 +33,6 @@ interface TechStack {
   image_logo: string;
   redirect_url: string;
 }
-
-interface ProjectStory {
-  id: string;
-  project_id: string;
-  content: string;
-  author: string[];
-}
-
-interface ProjectImage {
-  id: string;
-  project_id: string;
-  image_url: string;
-}
-
-interface ProjectResource {
-  id: string;
-  project_id: string;
-  resource_url: string;
-  type: string;
-  title: string;
-}
-
-interface Project {
-  id: string;
-  title: string;
-  description: string;
-  thumbnail_url: string;
-  stories: ProjectStory[];
-  tech_stacks: TechStack[];
-  images: ProjectImage[];
-  resources: ProjectResource[];
-}
-
 export function AdminProjectsPage() {
   const { toast } = useToast();
   const [projects, setProjects] = useState<Project[]>([]);
@@ -128,9 +96,8 @@ export function AdminProjectsPage() {
   };
 
   const handleDelete = (id: string) => {
-    const hardDelete = window.confirm("Delete project permanently? Cancel for soft delete.");
+    const hardDelete = window.confirm("Delete project permanently? Cancel for soft delete.")
     Effect.runPromise(apiClient.delete(`/api/v1/projects/${id}`, `?soft=${!hardDelete}`))
-
       .then(() => {
         fetchProjects();
         toast({ title: "Deleted", description: "Project deleted successfully", variant: "success" });
@@ -139,9 +106,6 @@ export function AdminProjectsPage() {
         toast({ title: "Deletion Failed", description: err.message || "Deletion failed", variant: "destructive" });
       });
   };
-
-
-
 
   return (
     <div className="space-y-6">

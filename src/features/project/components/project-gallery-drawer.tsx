@@ -1,5 +1,4 @@
 // ponytail: separate project gallery manager dialog component
-import * as React from "react";
 import { useState } from "react";
 import { Loader2, Trash2, Image as ImageIcon } from "lucide-react";
 import { Button } from "@/shared/ui/button";
@@ -15,17 +14,12 @@ import { apiClient } from "@/shared/api/client";
 import { Effect } from "effect";
 import { useToast } from "@/shared/ui/toast";
 import { FileUploader } from "@/shared/ui/file-uploader";
+import type { Project } from "@/entities/project/model/types";
 
 interface ProjectImage {
   id: string;
   project_id: string;
   image_url: string;
-}
-
-interface Project {
-  id: string;
-  title: string;
-  images: ProjectImage[];
 }
 
 interface ProjectGalleryDrawerProps {

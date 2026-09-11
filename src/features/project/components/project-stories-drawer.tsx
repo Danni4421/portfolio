@@ -1,5 +1,4 @@
 // ponytail: separate project case stories manager dialog component
-import * as React from "react";
 import { useState } from "react";
 import { Loader2, Trash2, BookOpen } from "lucide-react";
 import { Button } from "@/shared/ui/button";
@@ -16,18 +15,13 @@ import {
 import { apiClient } from "@/shared/api/client";
 import { Effect } from "effect";
 import { useToast } from "@/shared/ui/toast";
+import type { Project } from "@/entities/project/model/types";
 
 interface ProjectStory {
   id: string;
   project_id: string;
   content: string;
   author: string[];
-}
-
-interface Project {
-  id: string;
-  title: string;
-  stories: ProjectStory[];
 }
 
 interface ProjectStoriesDrawerProps {

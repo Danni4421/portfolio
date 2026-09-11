@@ -1,10 +1,10 @@
 // ponytail: separate project relations dialog component
-import * as React from "react";
-import { useState } from "react";
+import React from "react";
+import { useState, useEffect } from "react";
 import { Loader2, Plus, Trash2, BookOpen, Layers, Globe, PlusCircle, Trash, ExternalLink } from "lucide-react";
-import { Button } from "@/shared/ui/button";
+
 import { Input } from "@/shared/ui/input";
-import { Label } from "@/shared/ui/label";
+
 import {
   Dialog,
   DialogContent,
@@ -15,45 +15,11 @@ import { apiClient } from "@/shared/api/client";
 import { Effect } from "effect";
 import { useToast } from "@/shared/ui/toast";
 import { FileUploader } from "@/shared/ui/file-uploader";
-
-interface TechStack {
-  id: string;
-  name: string;
-  image_logo: string;
-  redirect_url: string;
-}
-
-interface ProjectStory {
-  id: string;
-  project_id: string;
-  content: string;
-  author: string[];
-}
-
-interface ProjectImage {
-  id: string;
-  project_id: string;
-  image_url: string;
-}
-
-interface ProjectResource {
-  id: string;
-  project_id: string;
-  resource_url: string;
-  type: string;
-  title: string;
-}
-
-interface Project {
-  id: string;
-  title: string;
-  description: string;
-  thumbnail_url: string;
-  stories: ProjectStory[];
-  tech_stacks: TechStack[];
-  images: ProjectImage[];
-  resources: ProjectResource[];
-}
+import type { Project } from "@/entities/project/model/types";
+import type { ProjectStory } from "@/entities/project/model/types";
+import type { ProjectImage } from "@/entities/project/model/types";
+import type { ProjectResource } from "@/entities/project/model/types";
+import type { TechStack } from "@/entities/tech-stack/model/types";
 
 interface ProjectRelationsDrawerProps {
   open: boolean;
@@ -74,26 +40,18 @@ export function ProjectRelationsDrawer({
 }: ProjectRelationsDrawerProps) {
   const { toast } = useToast();
 
-  // Story states
   const [storyContent, setStoryContent] = useState("");
   const [storyAuthors, setStoryAuthors] = useState("Aji");
   const [storyLoading, setStoryLoading] = useState(false);
-
-  // Tech stack states
   const [selectedStackId, setSelectedStackId] = useState("");
   const [stackLoading, setStackLoading] = useState(false);
-
-  // Gallery states
   const [galleryUploading, setGalleryUploading] = useState(false);
-
-  // External resource states
   const [resourceLinkUrl, setResourceLinkUrl] = useState("");
   const [resourceTitle, setResourceTitle] = useState("");
   const [resourceType, setResourceType] = useState("repository");
   const [resourceLoading, setResourceLoading] = useState(false);
 
-  // Sync selected stack index
-  React.useEffect(() => {
+  useEffect(() => {
     if (allStacks.length > 0 && !selectedStackId) {
       setSelectedStackId(allStacks[0].id);
     }
@@ -313,9 +271,7 @@ export function ProjectRelationsDrawer({
         </DialogHeader>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 p-6">
-          {/* Left Column: Stories & Tech Stacks */}
           <div className="space-y-6">
-            {/* Story Blocks Section */}
             <div className="space-y-4 border-b border-neutral-200 pb-6">
               <h4 className="font-sans text-xs font-bold text-neutral-700 uppercase tracking-wider flex items-center gap-1.5">
                 <BookOpen size={14} /> Project Case Stories
@@ -368,7 +324,6 @@ export function ProjectRelationsDrawer({
               </div>
             </div>
 
-            {/* Tech Stacks Section */}
             <div className="space-y-4">
               <h4 className="font-sans text-xs font-bold text-neutral-700 uppercase tracking-wider flex items-center gap-1.5">
                 <Layers size={14} /> Linked Tech Stacks
@@ -415,9 +370,7 @@ export function ProjectRelationsDrawer({
             </div>
           </div>
 
-          {/* Right Column: Gallery & External Resources */}
           <div className="space-y-6">
-            {/* Gallery Images Section */}
             <div className="space-y-4 border-b border-neutral-200 pb-6">
               <h4 className="font-sans text-xs font-bold text-neutral-700 uppercase tracking-wider flex items-center gap-1.5">
                 <Globe size={14} /> Project Gallery Images
@@ -446,7 +399,6 @@ export function ProjectRelationsDrawer({
               </div>
             </div>
 
-            {/* External Resources Section */}
             <div className="space-y-4">
               <h4 className="font-sans text-xs font-bold text-neutral-700 uppercase tracking-wider flex items-center gap-1.5">
                 <ExternalLink size={14} /> External Resources & Links
