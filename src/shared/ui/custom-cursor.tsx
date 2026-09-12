@@ -1,9 +1,36 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { gsap } from "gsap";
 
+function isMobileDevice(): boolean {
+  return (
+    typeof window !== "undefined" &&
+    (navigator.maxTouchPoints > 0 ||
+      window.innerWidth <= 1024 ||
+      window.matchMedia("(pointer: coarse)").matches ||
+      window.matchMedia("(hover: none)").matches ||
+      window.matchMedia("(any-pointer: coarse)").matches ||
+      window.matchMedia("(any-hover: none)").matches ||
+      /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
+        navigator.userAgent
+      ))
+  );
+}
+
 export function CustomCursor() {
+  const [isMobile, setIsMobile] = useState(
+    typeof window !== "undefined" && isMobileDevice()
+  );
+
+  useEffect(() => {
+    const check = () => setIsMobile(isMobileDevice());
+    window.addEventListener("resize", check);
+    return () => window.removeEventListener("resize", check);
+  }, []);
+
   const circleRef = useRef<HTMLDivElement>(null);
   const dotRef = useRef<HTMLDivElement>(null);
+
+  if (isMobile) return null;
 
   useEffect(() => {
     const circle = circleRef.current!;
