@@ -60,11 +60,11 @@ export function ProjectCard({ project }: { project: Project; index: number }) {
   }, [project.resources]);
 
   return (
-    <div className="group relative flex flex-col h-full gap-4 rounded-2xl border border-neutral-200/50 dark:border-neutral-800/40 p-4 bg-white/40 dark:bg-neutral-900/40 backdrop-blur-sm transition-all duration-300 hover:shadow-lg">
+    <div className="group relative flex flex-col h-full gap-4 rounded-2xl border border-neutral-200/50 p-4 bg-white/40 backdrop-blur-sm transition-all duration-300 hover:shadow-lg">
       {/* Project Image */}
-      <div className="relative aspect-video w-full overflow-hidden rounded-xl bg-neutral-100 dark:bg-neutral-800">
+      <div className="relative aspect-video w-full overflow-hidden rounded-xl bg-neutral-100">
         <img
-          src={project.thumbnail_url ?? "https://via.placeholder.com/800x600"}
+          src={project.thumbnail_url ?? "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='800' height='600'%3E%3Crect fill='%23e5e7eb' width='800' height='600'/%3E%3C/svg%3E"}
           alt={project.title}
           className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
         />
@@ -73,7 +73,7 @@ export function ProjectCard({ project }: { project: Project; index: number }) {
           {project.tech_stacks.slice(0, 3).map((tech) => (
             <span
               key={tech.id}
-              className="rounded-full bg-white/95 px-2.5 py-0.5 text-[10px] font-semibold text-neutral-900 backdrop-blur shadow-sm dark:bg-black/90 dark:text-neutral-100"
+              className="rounded-full bg-white/95 px-2.5 py-0.5 text-[10px] font-semibold text-neutral-900 backdrop-blur shadow-sm"
             >
               {tech.name}
             </span>
@@ -84,15 +84,15 @@ export function ProjectCard({ project }: { project: Project; index: number }) {
       {/* Content */}
       <div className="flex-1 flex flex-col justify-between gap-4">
         <div className="space-y-2">
-          <h3 className="font-serif text-xl font-bold text-neutral-900 dark:text-neutral-100 group-hover:text-orange-600 dark:group-hover:text-orange-400 transition-colors">
+          <h3 className="font-serif text-xl font-bold text-neutral-900 group-hover:text-orange-600 transition-colors">
             {project.title}
           </h3>
-          <p className="text-sm leading-relaxed text-neutral-600 dark:text-neutral-400 line-clamp-3">
+          <p className="text-sm leading-relaxed text-neutral-600 line-clamp-3">
             {project.description}
           </p>
         </div>
 
-        <div className="flex flex-wrap gap-4 pt-2 border-neutral-150 dark:border-neutral-800/60">
+        <div className="flex flex-wrap gap-4 pt-2 border-neutral-150">
           {hasStory && (
             <ProjectLink url={`/projects/${project.slug}`} icon={ArrowRight}>
               Read Story
