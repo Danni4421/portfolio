@@ -7,6 +7,7 @@ import { useQuery } from "@tanstack/react-query";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import type { Achievement } from "@/entities/achievement/model/types";
+import FoldText from "@/shared/ui/fold-text";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -14,7 +15,7 @@ export function AchievementList() {
   const containerRef: RefObject<HTMLDivElement | null> =
     useRef<HTMLDivElement>(null);
 
-  const { data: achievements } = useQuery<Array<Achievement>>({
+  const { data: achievements, isLoading, isError } = useQuery<Array<Achievement>>({
     queryKey: ["achievements"],
     queryFn: () =>
       Effect.runPromise(
@@ -52,7 +53,26 @@ export function AchievementList() {
     return () => ctx.revert();
   }, [achievements]);
 
-  if (!achievements || achievements.length === 0) return null;
+  if (isLoading) return null;
+
+  if (isError || !achievements || achievements.length === 0) {
+    return (
+      <section
+        id="achievements"
+        className="space-y-20 px-4 py-4 md:px-16 md:py-12 lg:px-24 border-b border-border scroll-mt-20 md:scroll-mt-24"
+      >
+        <div className="space-y-12">
+          <SectionHeader
+            title="Achievements"
+            description="Milestones that showcase my dedication to delivering exceptional design and creating meaningful impact."
+          />
+          <p className="text-sm text-gray-400 text-center">
+            <FoldText text="There are no related achievements for now." splitBy="word" />
+          </p>
+        </div>
+      </section>
+    );
+  }
 
   return (
     <section
@@ -60,7 +80,7 @@ export function AchievementList() {
       ref={containerRef}
       className="space-y-20 px-4 py-4 md:px-16 md:py-12 lg:px-24 border-b border-border scroll-mt-20 md:scroll-mt-24"
     >
-      <div className="space-y-12">
+      <div className="space-y-12 animate-content-enter">
         <SectionHeader
           title="Achievements"
           description="Milestones that showcase my dedication to delivering exceptional design and creating meaningful impact."

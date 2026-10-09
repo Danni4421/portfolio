@@ -167,14 +167,20 @@ export function AdminProjectsPage() {
                 </TableCell>
               </TableRow>
             ) : (
-              projects.map((proj) => (
-                <TableRow key={proj.id}>
+              projects.map((proj, idx) => (
+                <TableRow
+                  key={proj.id}
+                  className="animate-content-enter"
+                  style={{ animationDelay: `${idx * 60}ms` }}
+                >
                   <TableCell>
-                    <img
-                      src={proj.thumbnail_url}
-                      alt={proj.title}
-                      className="w-20 h-12 rounded-lg object-cover border border-gray-200 bg-gray-50"
-                    />
+                    <div className="shine-enter w-20 h-12 rounded-lg">
+                      <img
+                        src={proj.thumbnail_url}
+                        alt={proj.title}
+                        className="w-full h-full rounded-lg object-cover border border-gray-200 bg-gray-50"
+                      />
+                    </div>
                   </TableCell>
                   <TableCell className="font-semibold text-[#111111]">{proj.title}</TableCell>
                   <TableCell className="text-gray-600 text-xs max-w-xs truncate">{proj.description}</TableCell>

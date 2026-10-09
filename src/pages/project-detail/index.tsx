@@ -4,6 +4,7 @@ import Markdown from "react-markdown"
 import { Effect } from "effect"
 import { getProjectBySlug } from "@/entities/project/api/project"
 import { Skeleton } from "@/shared/ui/skeleton"
+import FoldText from "@/shared/ui/fold-text"
 import { useQuery } from "@tanstack/react-query"
 import type { Project } from "@/entities/project/model/types"
 
@@ -15,7 +16,13 @@ interface ProjectDetailData {
 export function ProjectDetailPage() {
   const { slug } = useParams<{ slug: string }>()
 
-  const { data: projectDetail, isLoading: loading } = useQuery<ProjectDetailData>({
+  const {
+    data: projectDetail,
+    isLoading: loading,
+    isError,
+    error,
+    refetch,
+  } = useQuery<ProjectDetailData>({
     queryKey: ["project", slug],
     queryFn: () =>
       Effect.runPromise(
@@ -40,7 +47,7 @@ export function ProjectDetailPage() {
 
   if (loading) {
     return (
-      <main className="grid-pattern min-h-screen px-4 py-20 md:px-24 bg-white dark:bg-black">
+      <main className="grid-pattern min-h-screen px-4 py-20 md:px-24 bg-white">
         <div className="mx-auto max-w-4xl space-y-8" aria-hidden>
           {/* title */}
           <Skeleton className="h-12 w-2/3" />
@@ -70,32 +77,71 @@ export function ProjectDetailPage() {
     )
   }
 
+  if (isError) {
+    const notFound = error instanceof Error && error.message.includes("404")
+
+    if (notFound) {
+      return (
+        <main className="grid-pattern min-h-screen px-4 py-20 md:px-24">
+          <div className="mx-auto max-w-4xl text-center">
+            <h1 className="text-3xl font-bold">
+              <FoldText text="Project not found" />
+            </h1>
+          </div>
+        </main>
+      )
+    }
+
+    return (
+      <main className="grid-pattern min-h-screen px-4 py-20 md:px-24 bg-white">
+        <div className="mx-auto max-w-4xl text-center space-y-4">
+          <p className="text-sm text-gray-400">
+            <FoldText text="Failed to load the project." splitBy="word" duration={0.2} />
+          </p>
+          <button
+            type="button"
+            onClick={() => refetch()}
+            className="bg-transparent border-0 p-0 cursor-pointer text-sm underline underline-offset-4 text-gray-400 hover:text-[#111111]"
+          >
+            Try again
+          </button>
+        </div>
+      </main>
+    )
+  }
+
   if (!project) {
     return (
       <main className="grid-pattern min-h-screen px-4 py-20 md:px-24">
         <div className="mx-auto max-w-4xl text-center">
-          <h1 className="text-3xl font-bold">Project not found</h1>
+          <h1 className="text-3xl font-bold">
+            <FoldText text="Project not found" />
+          </h1>
         </div>
       </main>
     )
   }
 
   return (
-    <main className="grid-pattern min-h-screen px-4 py-20 md:px-24 bg-white dark:bg-black">
-      <div className="mx-auto max-w-4xl space-y-8">
-        <h1 className="font-serif text-[3rem] leading-[1.1] tracking-[-0.02em] font-medium text-gray-900 dark:text-gray-100">{project.title}</h1>
+    <main className="grid-pattern min-h-screen px-4 py-20 md:px-24 bg-white">
+      <div className="mx-auto max-w-4xl space-y-8 animate-content-enter">
+        <h1 className="font-serif text-[3rem] leading-[1.1] tracking-[-0.02em] font-medium text-gray-900">
+          <FoldText text={project.title} />
+        </h1>
 
         {project.thumbnail_url && (
-          <img
-            src={project.thumbnail_url}
-            alt={project.title}
-            className="h-96 w-full rounded-2xl object-cover"
-          />
+          <div className="shine-enter rounded-2xl">
+            <img
+              src={project.thumbnail_url}
+              alt={project.title}
+              className="h-96 w-full rounded-2xl object-cover"
+            />
+          </div>
         )}
 
         {project.description && (
           <div className="flex flex-col">
-            <p className="text-lg text-gray-700 dark:text-gray-300">
+            <p className="text-lg text-gray-700">
               {project.description}
             </p>
           </div>
@@ -110,7 +156,7 @@ export function ProjectDetailPage() {
               </span>
               <div className="flex-1 border-t border-dashed border-neutral-400" />
             </div>
-            <div className="prose dark:prose-invert max-w-none space-y-6 mt-6">
+            <div className="prose max-w-none space-y-6 mt-6">
               <Markdown>{storyMarkdown}</Markdown>
             </div>
           </div>

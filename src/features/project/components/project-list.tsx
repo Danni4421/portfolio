@@ -4,6 +4,8 @@ import { useQuery } from "@tanstack/react-query";
 import { Effect } from "effect";
 import type { Project } from "@/entities/project/model/types";
 import { getRecentProjects } from "@/entities/project/api/project";
+import { Skeleton } from "@/shared/ui/skeleton";
+import FoldText from "@/shared/ui/fold-text";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
@@ -13,7 +15,7 @@ export function ProjectList() {
   const containerRef = useRef<HTMLDivElement>(null);
   const { pathname } = useLocation();
 
-  const { data: projects } = useQuery<Array<Project>>({
+  const { data: projects, isLoading, isError } = useQuery<Array<Project>>({
     queryKey: ["recentProjects"],
     queryFn: () =>
       Effect.runPromise(
@@ -48,18 +50,69 @@ export function ProjectList() {
     return () => ctx.revert();
   }, [projects]);
 
-  if (!projects || projects.length === 0) return null;
+  if (isLoading) {
+    return (
+      <section className="px-4 py-16 md:py-24 border-t border-gray-100">
+        <div className="max-w-5xl mx-auto">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-x-1 gap-y-4 mb-6 md:mb-8">
+            <p className="md:sticky md:self-start md:top-4 text-lg tracking-[-0.64px] text-black">
+              What have I been working on?
+            </p>
+            <div>
+              <p className="text-sm leading-relaxed text-gray-500">
+                Projects I&apos;ve created and build with care.
+              </p>
+            </div>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+            {Array.from({ length: 4 }).map((_, i) => (
+              <div key={i}>
+                <Skeleton className="aspect-7/5 w-full rounded-lg mb-3" />
+                <Skeleton className="h-4 w-1/2 mb-1.5" />
+                <Skeleton className="h-3 w-3/4" />
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+    );
+  }
+
+  if (isError || !projects || projects.length === 0) {
+    return (
+      <section className="px-4 py-16 md:py-24 border-t border-gray-100">
+        <div className="max-w-5xl mx-auto">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-x-1 gap-y-4 mb-6 md:mb-8">
+            <p className="md:sticky md:self-start md:top-4 text-lg tracking-[-0.64px] text-black">
+              What have I been working on?
+            </p>
+            <div>
+              <p className="text-sm leading-relaxed text-gray-500">
+                Projects I&apos;ve created and build with care.
+              </p>
+            </div>
+          </div>
+          <p className="text-sm text-gray-400">
+            <FoldText text="There are no related projects for now." splitBy="word" />
+          </p>
+        </div>
+      </section>
+    );
+  }
 
   return (
     <section className="px-4 py-16 md:py-24 border-t border-gray-100">
       <div className="max-w-5xl mx-auto">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-x-1 gap-y-4 mb-6 md:mb-8">
           <p className="md:sticky md:self-start md:top-4 text-lg tracking-[-0.64px] text-black">
-            What have I been working on?
+            <FoldText text="What have I been working on?" />
           </p>
           <div>
             <p className="text-sm leading-relaxed text-gray-500">
-              Projects I've created and build with care.
+              <FoldText
+                text="Projects I've created and build with care."
+                splitBy="word"
+              />
             </p>
             {pathname !== "/projects" && (
               <a
@@ -80,7 +133,7 @@ export function ProjectList() {
               className="block group"
               data-project-card
             >
-              <div className="aspect-7/5 bg-gray-50 overflow-hidden rounded-lg relative mb-3">
+              <div className="aspect-7/5 bg-gray-50 overflow-hidden rounded-lg relative mb-3 shine-enter">
                 {project.thumbnail_url ? (
                   <img
                     alt={project.title}

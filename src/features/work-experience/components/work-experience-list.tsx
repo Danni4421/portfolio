@@ -3,6 +3,8 @@ import { useQuery } from "@tanstack/react-query";
 import { Effect } from "effect";
 import type { WorkExperience } from "../types";
 import { getWorkExperiences } from "../api";
+import { Skeleton } from "@/shared/ui/skeleton";
+import FoldText from "@/shared/ui/fold-text";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
@@ -18,7 +20,7 @@ const formatDate = (dateStr?: string | null) => {
 export function WorkExperienceList() {
   const containerRef = useRef<HTMLDivElement>(null);
 
-  const { data } = useQuery<{ experiences: WorkExperience[] }>({
+  const { data, isLoading, isError } = useQuery<{ experiences: WorkExperience[] }>({
     queryKey: ["workExperiences"],
     queryFn: () => Effect.runPromise(getWorkExperiences()),
   });
@@ -47,7 +49,71 @@ export function WorkExperienceList() {
     return () => ctx.revert();
   }, [experiences]);
 
-  if (experiences.length === 0) return null;
+  if (isLoading) {
+    return (
+      <section
+        id="experience"
+        className="px-4 py-16 md:py-24 border-t border-gray-100"
+      >
+        <div className="max-w-5xl mx-auto">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-x-1 gap-y-4 mb-6 md:mb-8">
+            <p className="md:sticky md:self-start md:top-4 text-lg tracking-[-0.64px] text-black">
+              Experience
+            </p>
+            <div>
+              <p className="text-sm leading-relaxed text-gray-500">
+                Where I&apos;ve worked and what I did there.
+              </p>
+            </div>
+          </div>
+          <div className="space-y-0 divide-y divide-gray-100">
+            {Array.from({ length: 4 }).map((_, i) => (
+              <div key={i} className="py-6 first:pt-0 last:pb-0">
+                <div className="flex flex-col sm:flex-row sm:items-start gap-3 sm:gap-4">
+                  <div className="flex items-center gap-3 sm:w-48 shrink-0">
+                    <Skeleton className="w-10 h-10 rounded-full shrink-0" />
+                    <div className="flex flex-col gap-2">
+                      <Skeleton className="h-4 w-24" />
+                      <Skeleton className="h-3 w-32" />
+                    </div>
+                  </div>
+                  <div className="flex-1 min-w-0 sm:pl-4">
+                    <Skeleton className="h-4 w-full mb-2" />
+                    <Skeleton className="h-4 w-4/5" />
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+    );
+  }
+
+  if (isError || experiences.length === 0) {
+    return (
+      <section
+        id="experience"
+        className="px-4 py-16 md:py-24 border-t border-gray-100"
+      >
+        <div className="max-w-5xl mx-auto">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-x-1 gap-y-4 mb-6 md:mb-8">
+            <p className="md:sticky md:self-start md:top-4 text-lg tracking-[-0.64px] text-black">
+              Experience
+            </p>
+            <div>
+              <p className="text-sm leading-relaxed text-gray-500">
+                Where I&apos;ve worked and what I did there.
+              </p>
+            </div>
+          </div>
+          <p className="text-sm text-gray-400">
+            <FoldText text="There are no related work experiences for now." splitBy="word" />
+          </p>
+        </div>
+      </section>
+    );
+  }
 
   return (
     <section
@@ -58,11 +124,14 @@ export function WorkExperienceList() {
       <div className="max-w-5xl mx-auto">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-x-1 gap-y-4 mb-6 md:mb-8">
           <p className="md:sticky md:self-start md:top-4 text-lg tracking-[-0.64px] text-black">
-            Experience
+            <FoldText text="Experience" />
           </p>
           <div>
             <p className="text-sm leading-relaxed text-gray-500">
-              Where I&apos;ve worked and what I did there.
+              <FoldText
+                text="Where I've worked and what I did there."
+                splitBy="word"
+              />
             </p>
           </div>
         </div>
@@ -80,7 +149,7 @@ export function WorkExperienceList() {
                     <img
                       src={exp.company_url}
                       alt={exp.title}
-                      className="w-10 h-10 rounded-lg object-contain border border-gray-200 bg-gray-50 p-1 shrink-0"
+                      className="w-10 h-10 rounded-full object-contain border border-gray-200 bg-gray-50 p-1 shrink-0"
                     />
                   ) : (
                     <div className="w-10 h-10 rounded-lg border border-gray-200 bg-gray-50 flex items-center justify-center shrink-0">
