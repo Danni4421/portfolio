@@ -6,8 +6,10 @@ import "blobatar/gaze.css";
 import { useContactForm } from "@/features/contact/hooks/use-contact-form";
 
 export function ContactForm() {
-  const { success, error, onSubmit } = useContactForm();
+  const { form, loading, success, error, onSubmit } = useContactForm();
   const { ref: gazeRef } = useGaze({ travel: 3, lookAt: "pointer" });
+
+  const { errors } = form.formState;
 
   return (
     <section id="contact" className="px-4 py-16 md:py-24 border-t border-gray-100">
@@ -41,18 +43,27 @@ export function ContactForm() {
           <input
             type="email"
             placeholder="your@email.com"
+            {...form.register("email")}
             className="w-full border-b border-gray-200 py-3 text-sm text-[#111111] placeholder:text-gray-400 focus:outline-none focus:border-[#111111] bg-transparent transition-colors"
           />
+          {errors.email && (
+            <p className="text-sm text-red-500">{errors.email.message}</p>
+          )}
           <textarea
             rows={4}
             placeholder="Your message..."
+            {...form.register("message")}
             className="w-full border-b border-gray-200 py-3 text-sm text-[#111111] placeholder:text-gray-400 focus:outline-none focus:border-[#111111] bg-transparent resize-none transition-colors"
           />
+          {errors.message && (
+            <p className="text-sm text-red-500">{errors.message.message}</p>
+          )}
           <button
             type="submit"
-            className="text-sm font-medium text-[#111111] underline underline-offset-4 hover:text-gray-500 transition-colors"
+            disabled={loading}
+            className="text-sm font-medium text-[#111111] underline underline-offset-4 hover:text-gray-500 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            Send message →
+            {loading ? "Sending…" : "Send message →"}
           </button>
           {success && (
             <p className="text-sm text-gray-500">Message sent successfully.</p>

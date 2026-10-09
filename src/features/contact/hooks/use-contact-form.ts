@@ -33,15 +33,23 @@ export function useContactForm() {
     const program = Effect.gen(function* () {
       yield* Effect.tryPromise({
         try: async () => {
-          const response = await fetch("https://formspree.io/f/mnngywja", {
+          const response = await fetch("/api/v1/contact", {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
+              Accept: "application/json",
             },
             body: JSON.stringify(data),
           })
 
-          if (!response.ok) throw new Error("Failed to send message")
+          const json = (await response.json().catch(() => null)) as {
+            success?: boolean
+            error?: string
+          } | null
+
+          if (!response.ok || !json?.success) {
+            throw new Error(json?.error || "Failed to send message")
+          }
           return response
         },
         catch: (err) => new Error(err instanceof Error ? err.message : "Something went wrong")
