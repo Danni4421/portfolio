@@ -10,6 +10,7 @@ import { AdminArticlesPage } from "@/pages/admin/articles"
 import { AdminAchievementsPage } from "@/pages/admin/achievements"
 import { AdminWorkPage } from "@/pages/admin/work"
 import { AdminProfilePage } from "@/pages/admin/profile"
+import { NotFoundPage } from "@/pages/not-found"
 import { ToastProviderWrapper } from "@/shared/ui/toast"
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
 import { CustomCursor } from "@/shared/ui/custom-cursor"
@@ -50,6 +51,9 @@ function App() {
 
             {/* Legacy redirect for /admin/dashboard */}
             <Route path="/admin/dashboard" element={<Navigate to="/admin/projects" replace />} />
+
+            {/* Catch-all 404 */}
+            <Route path="*" element={<NotFoundPage />} />
           </Routes>
         </BrowserRouter>
       </ToastProviderWrapper>
