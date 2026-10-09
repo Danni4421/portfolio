@@ -11,7 +11,7 @@ export function PersonBadge({ name, is_man, href }: PersonBadgeProps) {
   const imageSrc = is_man ? "/port-man.png" : "/port-woman.png"
 
   const Content = (
-    <div className="flex h-12 w-12 items-center justify-center rounded-full border border-gray-200 bg-white p-2 transition-shadow hover:shadow-md dark:border-gray-700 dark:bg-gray-800">
+    <div className="flex h-12 w-12 items-center justify-center rounded-full border border-gray-200 bg-white p-2 transition-shadow hover:shadow-md">
       <img src={imageSrc} alt={name} className="h-full w-full object-contain" />
     </div>
   )

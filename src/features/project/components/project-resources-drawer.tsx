@@ -100,8 +100,8 @@ export function ProjectResourcesDrawer({
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-md">
-        <DialogHeader className="border-b border-neutral-200 dark:border-neutral-800 pb-3">
-          <DialogTitle className="font-sans text-lg font-bold text-neutral-955 dark:text-neutral-50 flex items-center gap-1.5">
+        <DialogHeader className="border-b border-neutral-200 pb-3">
+          <DialogTitle className="font-sans text-lg font-bold text-neutral-955 flex items-center gap-1.5">
             <ExternalLink size={18} className="text-[#ec7211]" /> Project Resources
           </DialogTitle>
           <p className="text-xs text-[#ec7211] font-semibold mt-0.5">Project: {project.title}</p>

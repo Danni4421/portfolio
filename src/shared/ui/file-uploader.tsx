@@ -75,10 +75,10 @@ export function FileUploader({
         onDrop={handleDrop}
         onClick={onButtonClick}
         className={cn(
-          "relative flex flex-col items-center justify-center w-full min-h-[140px] border-2 border-dashed rounded-xl cursor-pointer transition-all duration-200 p-4 select-none bg-neutral-50/50 hover:bg-neutral-50/80 dark:bg-neutral-900/10 dark:hover:bg-neutral-900/20 group",
+          "relative flex flex-col items-center justify-center w-full min-h-[140px] border-2 border-dashed rounded-xl cursor-pointer transition-all duration-200 p-4 select-none bg-neutral-50/50 hover:bg-neutral-50/80 group",
           dragActive
-            ? "border-[#ec7211] bg-orange-50/10 dark:bg-orange-950/10"
-            : "border-neutral-300 hover:border-[#ec7211]/50 dark:border-neutral-800 dark:hover:border-[#ec7211]/40",
+            ? "border-[#ec7211] bg-orange-50/10"
+            : "border-neutral-300 hover:border-[#ec7211]/50",
           className
         )}
       >
@@ -89,7 +89,7 @@ export function FileUploader({
           </div>
         ) : previewUrl ? (
           <div className="relative flex flex-col items-center justify-center w-full h-full gap-2" onClick={(e) => e.stopPropagation()}>
-            <div className="relative rounded-lg overflow-hidden border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-950 max-h-[100px] max-w-[160px] p-1">
+            <div className="relative rounded-lg overflow-hidden border border-neutral-200 bg-white max-h-[100px] max-w-[160px] p-1">
               <img src={previewUrl} alt="Preview" className="object-contain max-h-[90px] w-full rounded" />
               {onRemovePreview && (
                 <button
@@ -114,14 +114,14 @@ export function FileUploader({
           </div>
         ) : (
           <div className="flex flex-col items-center text-center gap-2 pointer-events-none">
-            <div className="p-2.5 bg-white dark:bg-neutral-950 rounded-xl shadow-xs border border-neutral-200/50 dark:border-neutral-800/40 text-neutral-500 dark:text-neutral-400 group-hover:text-[#ec7211] transition-colors">
+            <div className="p-2.5 bg-white rounded-xl shadow-xs border border-neutral-200/50 text-neutral-500 group-hover:text-[#ec7211] transition-colors">
               <UploadCloud size={20} className="group-hover:scale-105 transition-transform" />
             </div>
             <div className="flex flex-col gap-0.5 mt-0.5">
-              <p className="text-xs font-semibold text-neutral-700 dark:text-neutral-300">
+              <p className="text-xs font-semibold text-neutral-700">
                 <span className="text-[#ec7211] group-hover:underline">Click to upload</span> or drag and drop
               </p>
-              <p className="text-[10px] text-neutral-500 dark:text-neutral-400">{subLabel}</p>
+              <p className="text-[10px] text-neutral-500">{subLabel}</p>
             </div>
           </div>
         )}

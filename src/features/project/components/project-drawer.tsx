@@ -37,8 +37,8 @@ export function ProjectDrawer({
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-md">
-        <DialogHeader className="border-b border-neutral-200 dark:border-neutral-800 pb-3">
-          <DialogTitle className="font-sans text-lg font-bold text-neutral-955 dark:text-neutral-50">
+        <DialogHeader className="border-b border-neutral-200 pb-3">
+          <DialogTitle className="font-sans text-lg font-bold text-neutral-955">
             {editingProject ? "Edit Project" : "Create Project"}
           </DialogTitle>
         </DialogHeader>

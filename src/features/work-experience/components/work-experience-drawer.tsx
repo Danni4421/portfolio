@@ -39,8 +39,8 @@ export function WorkExperienceDrawer({
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-md w-[calc(100%-2rem)] max-h-[90vh] overflow-y-auto p-4 sm:p-6 rounded-2xl">
-        <DialogHeader className="border-b border-neutral-200 dark:border-neutral-800 pb-3">
-          <DialogTitle className="font-sans text-lg font-bold text-neutral-955 dark:text-neutral-50">
+        <DialogHeader className="border-b border-neutral-200 pb-3">
+          <DialogTitle className="font-sans text-lg font-bold text-neutral-955">
             {editingExperience ? "Edit Work Experience" : "Add Work Experience"}
           </DialogTitle>
         </DialogHeader>

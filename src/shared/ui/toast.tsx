@@ -33,9 +33,9 @@ const Toast = React.forwardRef<
       ref={ref}
       className={cn(
         "group pointer-events-auto relative flex w-full items-center justify-between space-x-4 overflow-hidden rounded-xl border p-4 pr-8 shadow-lg transition-all data-[state=open]:animate-in data-[state=closed]:animate-out data-[swipe=end]:animate-out data-[state=closed]:fade-out-80 data-[state=open]:slide-in-from-top-full data-[state=open]:sm:slide-in-from-bottom-full data-[state=closed]:slide-out-to-right-full",
-        variant === "default" && "bg-white/90 dark:bg-neutral-900/90 text-neutral-950 dark:text-neutral-50 border-neutral-200 dark:border-neutral-800 backdrop-blur-md",
-        variant === "destructive" && "destructive border-red-500/30 bg-red-50/90 dark:bg-red-950/20 text-red-900 dark:text-red-200 backdrop-blur-md",
-        variant === "success" && "border-emerald-500/30 bg-emerald-50/90 dark:bg-emerald-950/20 text-emerald-900 dark:text-emerald-200 backdrop-blur-md",
+        variant === "default" && "bg-white/90 text-neutral-950 border-neutral-200 backdrop-blur-md",
+        variant === "destructive" && "destructive border-red-500/30 bg-red-50/90 text-red-900 backdrop-blur-md",
+        variant === "success" && "border-emerald-500/30 bg-emerald-50/90 text-emerald-900 backdrop-blur-md",
         className
       )}
       {...props}
@@ -51,7 +51,7 @@ const ToastClose = React.forwardRef<
   <ToastPrimitives.Close
     ref={ref}
     className={cn(
-      "absolute right-2 top-2 rounded-md p-1 text-neutral-500 hover:text-neutral-950 dark:text-neutral-400 dark:hover:text-neutral-50 opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer",
+      "absolute right-2 top-2 rounded-md p-1 text-neutral-500 hover:text-neutral-950 opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer",
       className
     )}
     toast-close=""
