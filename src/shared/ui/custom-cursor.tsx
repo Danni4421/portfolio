@@ -3,38 +3,26 @@ import { gsap } from "gsap";
 import { Blobatar } from "@blobatar/react";
 import "blobatar/motion.css";
 
-function isMobileDevice(): boolean {
-  return (
-    typeof window !== "undefined" &&
-    (navigator.maxTouchPoints > 0 ||
-      window.innerWidth <= 1024 ||
-      window.matchMedia("(pointer: coarse)").matches ||
-      window.matchMedia("(hover: none)").matches ||
-      window.matchMedia("(any-pointer: coarse)").matches ||
-      window.matchMedia("(any-hover: none)").matches ||
-      /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
-        navigator.userAgent
-      ))
-  );
+function isMobileOS(): boolean {
+  const ua = navigator.userAgent;
+  // Mobile OS tokens: Android, iOS (iPhone/iPad/iPod), legacy mobile OSes
+  if (/Android|iPhone|iPad|iPod|webOS|BlackBerry|IEMobile|Opera Mini/i.test(ua)) {
+    return true;
+  }
+  // iPadOS 13+ masquerades as macOS in its UA; distinguish it via multi-touch
+  return /Macintosh/.test(ua) && navigator.maxTouchPoints > 1;
 }
 
 export function CustomCursor() {
-  const [isMobile, setIsMobile] = useState(
-    typeof window !== "undefined" && isMobileDevice()
-  );
-
-  useEffect(() => {
-    const check = () => setIsMobile(isMobileDevice());
-    window.addEventListener("resize", check);
-    return () => window.removeEventListener("resize", check);
-  }, []);
+  // OS never changes at runtime — detect once
+  const [isMobile] = useState(isMobileOS);
 
   const circleRef = useRef<HTMLDivElement>(null);
   const dotRef = useRef<HTMLDivElement>(null);
 
-  if (isMobile) return null;
-
   useEffect(() => {
+    if (isMobile) return;
+
     const circle = circleRef.current!;
     const dot = dotRef.current!;
 
@@ -43,8 +31,8 @@ export function CustomCursor() {
     const setDotX = gsap.quickSetter(dot, "x", "px");
     const setDotY = gsap.quickSetter(dot, "y", "px");
 
-    let mouse = { x: window.innerWidth / 2, y: window.innerHeight / 2 };
-    let pos = { x: mouse.x, y: mouse.y };
+    const mouse = { x: window.innerWidth / 2, y: window.innerHeight / 2 };
+    const pos = { x: mouse.x, y: mouse.y };
 
     const onMouseMove = (e: MouseEvent) => {
       mouse.x = e.clientX;
@@ -85,7 +73,9 @@ export function CustomCursor() {
         el.removeEventListener("mouseleave", leaveHandlers.get(el)!);
       });
     };
-  }, []);
+  }, [isMobile]);
+
+  if (isMobile) return null;
 
   return (
     <>
