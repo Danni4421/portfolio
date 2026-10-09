@@ -1,7 +1,9 @@
 import { useEffect, useRef } from "react";
 import { gsap } from "gsap";
-
-import heroMe from '@/assets/hero-me.jpeg'
+import { Blobatar } from "@blobatar/react";
+import { useGaze } from "@blobatar/react/gaze";
+import "blobatar/motion.css";
+import "blobatar/gaze.css";
 
 function AnimatedText({
   text,
@@ -29,6 +31,7 @@ function AnimatedText({
 
 export function Hero() {
   const heroRef = useRef<HTMLDivElement>(null);
+  const { ref: gazeRef } = useGaze({ travel: 3, lookAt: "pointer" });
 
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -68,9 +71,15 @@ export function Hero() {
           </p>
         </div>
 
-        {/* Right column — portrait placeholder */}
+        {/* Right column — profile blobatar */}
         <div className="hidden md:flex justify-end">
-          <img src={heroMe} alt="This is me" className="aspect-3/4 w-64 md:w-80 rounded-lg" />
+          <Blobatar
+            ref={gazeRef}
+            name="ajikkk"
+            animate="always"
+            title="This is me"
+            className="w-3/4 aspect-square"
+          />
         </div>
       </div>
     </section>

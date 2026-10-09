@@ -1,7 +1,13 @@
+import { Blobatar } from "@blobatar/react";
+import { useGaze } from "@blobatar/react/gaze";
+import "blobatar/motion.css";
+import "blobatar/gaze.css";
+
 import { useContactForm } from "@/features/contact/hooks/use-contact-form";
 
 export function ContactForm() {
   const { success, error, onSubmit } = useContactForm();
+  const { ref: gazeRef } = useGaze({ travel: 3, lookAt: "pointer" });
 
   return (
     <section id="contact" className="px-4 py-16 md:py-24 border-t border-gray-100">
@@ -11,6 +17,13 @@ export function ContactForm() {
           <p className="text-lg tracking-[-0.64px] text-black mb-4">
             Get in touch
           </p>
+          <Blobatar
+            ref={gazeRef}
+            name="hugo"
+            animate="always"
+            title="This is me"
+            className="w-24 mb-4 aspect-square"
+          />
           <p className="text-sm text-gray-500 leading-relaxed max-w-sm">
             Available for freelance projects and part-time opportunities. Say
             hello at{" "}

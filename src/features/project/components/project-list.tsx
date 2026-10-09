@@ -1,4 +1,5 @@
 import { useEffect, useRef } from "react";
+import { useLocation } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { Effect } from "effect";
 import type { Project } from "@/entities/project/model/types";
@@ -10,6 +11,7 @@ gsap.registerPlugin(ScrollTrigger);
 
 export function ProjectList() {
   const containerRef = useRef<HTMLDivElement>(null);
+  const { pathname } = useLocation();
 
   const { data: projects } = useQuery<Array<Project>>({
     queryKey: ["recentProjects"],
@@ -59,12 +61,14 @@ export function ProjectList() {
             <p className="text-sm leading-relaxed text-gray-500">
               Projects I've created and build with care.
             </p>
-            <a
-              className="inline-block mt-4 text-sm underline underline-offset-4 text-gray-400 hover:text-[#111111]"
-              href="/projects"
-            >
-              View all
-            </a>
+            {pathname !== "/projects" && (
+              <a
+                className="inline-block mt-4 text-sm underline underline-offset-4 text-gray-400 hover:text-[#111111]"
+                href="/projects"
+              >
+                View all
+              </a>
+            )}
           </div>
         </div>
 
@@ -72,7 +76,7 @@ export function ProjectList() {
           {projects.map((project) => (
             <a
               key={project.id}
-              href={`/projects/${project.id}`}
+              href={`/projects/${project.slug}`}
               className="block group"
               data-project-card
             >

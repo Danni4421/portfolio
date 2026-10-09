@@ -1,5 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { gsap } from "gsap";
+import { Blobatar } from "@blobatar/react";
+import "blobatar/motion.css";
 
 function isMobileDevice(): boolean {
   return (
@@ -56,8 +58,8 @@ export function CustomCursor() {
       pos.y += (mouse.y - pos.y) * dt;
       setCircleX(pos.x - 20);
       setCircleY(pos.y - 20);
-      setDotX(mouse.x - 3);
-      setDotY(mouse.y - 3);
+      setDotX(mouse.x - 10);
+      setDotY(mouse.y - 10);
     });
 
     const hoverTargets = document.querySelectorAll("a, button, [data-hover]");
@@ -89,14 +91,22 @@ export function CustomCursor() {
     <>
       <div
         ref={circleRef}
-        className="fixed top-0 left-0 w-14 h-14 rounded-full bg-neutral-400/30 pointer-events-none z-9999"
+        className="fixed top-0 left-0 w-16 h-16 rounded-full bg-neutral-400/30 pointer-events-none z-9999"
         style={{ willChange: "transform", transform: "translate(-9999px, -9999px)" }}
       />
       <div
         ref={dotRef}
-        className="fixed top-0 left-0 w-5 h-5 rounded-full bg-neutral-600 pointer-events-none z-9999"
+        className="fixed -top-3 -left-2 w-12 h-12 pointer-events-none z-9999"
         style={{ willChange: "transform", transform: "translate(-9999px, -9999px)" }}
-      />
+      >
+        <Blobatar
+          name="simone"
+          animate="always"
+          background="circle"
+          amplitude={20}
+          className="block w-full h-full"
+        />
+      </div>
     </>
   );
 }

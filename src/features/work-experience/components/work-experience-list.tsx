@@ -109,7 +109,7 @@ export function WorkExperienceList() {
                       {exp.job_descriptions.map((desc) => (
                         <li
                           key={desc.id}
-                          className="flex gap-2 text-xs text-gray-400 leading-relaxed"
+                          className="flex gap-2 text-sm text-gray-400 leading-relaxed"
                         >
                           <span className="mt-1.5 w-1 h-1 rounded-full bg-gray-300 shrink-0" />
                           <span>{desc.description}</span>

@@ -15,14 +15,13 @@ interface ProjectDetailData {
 export function ProjectDetailPage() {
   const { slug } = useParams<{ slug: string }>()
 
-  // ponytail: useQuery handles loading, error states, and caches the project detail
   const { data: projectDetail, isLoading: loading } = useQuery<ProjectDetailData>({
     queryKey: ["project", slug],
     queryFn: () =>
       Effect.runPromise(
         Effect.gen(function* () {
           const { project: fetchedProject } = yield* getProjectBySlug(slug!)
-          
+
           let markdown = ""
           if (fetchedProject && fetchedProject.stories && fetchedProject.stories.length > 0) {
             // Concatenate all stories content
@@ -41,10 +40,31 @@ export function ProjectDetailPage() {
 
   if (loading) {
     return (
-      <main className="grid-pattern min-h-screen px-4 py-20 md:px-24">
-        <div className="mx-auto max-w-4xl space-y-8">
-          <Skeleton className="h-10 w-3/4" />
+      <main className="grid-pattern min-h-screen px-4 py-20 md:px-24 bg-white dark:bg-black">
+        <div className="mx-auto max-w-4xl space-y-8" aria-hidden>
+          {/* title */}
+          <Skeleton className="h-12 w-2/3" />
+
+          {/* thumbnail */}
           <Skeleton className="h-96 w-full rounded-2xl" />
+
+          {/* short description */}
+          <div className="flex flex-col gap-3">
+            <Skeleton className="h-6 w-44" />
+            <Skeleton className="h-5 w-full" />
+            <Skeleton className="h-5 w-2/3" />
+          </div>
+
+          {/* story */}
+          <div className="flex flex-col gap-3">
+            <Skeleton className="h-6 w-40" />
+            <Skeleton className="h-4 w-full" />
+            <Skeleton className="h-4 w-full" />
+            <Skeleton className="h-4 w-11/12" />
+            <Skeleton className="h-4 w-4/5" />
+            <Skeleton className="h-4 w-full" />
+            <Skeleton className="h-4 w-3/5" />
+          </div>
         </div>
       </main>
     )
@@ -63,7 +83,7 @@ export function ProjectDetailPage() {
   return (
     <main className="grid-pattern min-h-screen px-4 py-20 md:px-24 bg-white dark:bg-black">
       <div className="mx-auto max-w-4xl space-y-8">
-        <h1 className="font-serif text-[3rem] leading-[1.1] tracking-[-0.02em] font-bold text-gray-900 dark:text-gray-100">{project.title}</h1>
+        <h1 className="font-serif text-[3rem] leading-[1.1] tracking-[-0.02em] font-medium text-gray-900 dark:text-gray-100">{project.title}</h1>
 
         {project.thumbnail_url && (
           <img
@@ -75,7 +95,6 @@ export function ProjectDetailPage() {
 
         {project.description && (
           <div className="flex flex-col">
-            <h6 className="text-xl font-bold text-neutral-800 dark:text-neutral-200">Short Description:</h6>
             <p className="text-lg text-gray-700 dark:text-gray-300">
               {project.description}
             </p>
@@ -84,8 +103,14 @@ export function ProjectDetailPage() {
 
         {storyMarkdown && (
           <div className="flex flex-col">
-            <h6 className="mb-4 text-xl font-bold text-neutral-800 dark:text-neutral-200">Read the story:</h6>
-            <div className="prose dark:prose-invert max-w-none space-y-6">
+            <div className="flex items-center gap-4">
+              <div className="flex-1 border-t border-dashed border-neutral-400" />
+              <span className="text-neutral-400 whitespace-nowrap">
+                Read the project story
+              </span>
+              <div className="flex-1 border-t border-dashed border-neutral-400" />
+            </div>
+            <div className="prose dark:prose-invert max-w-none space-y-6 mt-6">
               <Markdown>{storyMarkdown}</Markdown>
             </div>
           </div>
