@@ -1,6 +1,7 @@
 
 import { useParams } from "react-router-dom"
 import Markdown from "react-markdown"
+import remarkGfm from "remark-gfm"
 import { Effect } from "effect"
 import { getProjectBySlug } from "@/entities/project/api/project"
 import { Skeleton } from "@/shared/ui/skeleton"
@@ -157,7 +158,7 @@ export function ProjectDetailPage() {
               <div className="flex-1 border-t border-dashed border-neutral-400" />
             </div>
             <div className="prose max-w-none space-y-6 mt-6">
-              <Markdown>{storyMarkdown}</Markdown>
+              <Markdown remarkPlugins={[remarkGfm]}>{storyMarkdown}</Markdown>
             </div>
           </div>
         )}
