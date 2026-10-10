@@ -2,6 +2,16 @@
 import { useState, useEffect } from "react";
 import { Plus, Edit2, Trash2 } from "lucide-react";
 import { Button } from "@/shared/ui/button";
+import { Card } from "@/shared/ui/card";
+import { Skeleton } from "@/shared/ui/skeleton";
+import {
+  Table,
+  TableHeader,
+  TableBody,
+  TableRow,
+  TableHead,
+  TableCell,
+} from "@/components/ui/table";
 import { apiClient } from "@/shared/api/client";
 import { Effect } from "effect";
 import { useToast } from "@/shared/ui/toast";
@@ -17,9 +27,14 @@ export function AdminWorkPage() {
 
   const fetchExperiences = () => {
     setLoading(true);
-    Effect.runPromise(apiClient.get("/api/v1/work-experiences"))
-      .then((res: any) => {
-        setExperiences(res.data.experiences);
+    Effect.runPromise(
+      apiClient.get<{ success: boolean; data?: WorkExperience[] | { experiences?: WorkExperience[] } }>(
+        "/api/v1/work-experiences"
+      )
+    )
+      .then((res) => {
+        const data = res.data;
+        setExperiences(Array.isArray(data) ? data : (data?.experiences ?? []));
       })
       .catch((err) => console.error(err))
       .finally(() => setLoading(false));
@@ -39,40 +54,68 @@ export function AdminWorkPage() {
   };
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between">
+    <div className="flex flex-col gap-6">
+      <div className="flex flex-col gap-1.5 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h2 className="text-lg tracking-[-0.64px] text-[#111111] font-medium">Work Experiences</h2>
-          <p className="text-gray-500 mt-1 text-sm">Manage work experience records</p>
+          <h2 className="text-lg font-semibold tracking-tight">Work Experiences</h2>
+          <p className="text-sm text-muted-foreground">Manage work experience records</p>
         </div>
-        <Button onClick={handleOpenCreate} className="bg-[#ff5c06] hover:opacity-90 text-white font-semibold rounded-2xl cursor-pointer">
+        <Button onClick={handleOpenCreate} className="gap-2 self-start">
           <Plus size={16} /> Add Experience
         </Button>
       </div>
 
-      {loading ? (
-        <div className="text-center py-8 text-gray-500">Loading...</div>
-      ) : (
-        <table className="w-full border border-gray-200 rounded-lg">
-          <thead>
-            <tr className="bg-gray-50">
-              <th className="p-3 text-left text-xs font-semibold uppercase">Title</th>
-              <th className="p-3 text-left text-xs font-semibold uppercase">Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {experiences.map((exp) => (
-              <tr key={exp.id} className="border-t">
-                <td className="p-3 text-sm">{exp.title}</td>
-                <td className="p-3">
-                  <button onClick={() => handleOpenEdit(exp)} className="text-blue-600 hover:underline text-sm mr-3">Edit</button>
-                  <button onClick={() => handleDelete(exp.id)} className="text-red-600 hover:underline text-sm">Delete</button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      )}
+      <Card className="overflow-hidden py-0">
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead>Title</TableHead>
+              <TableHead className="text-right">Actions</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {loading ? (
+              Array.from({ length: 4 }).map((_, idx) => (
+                <TableRow key={idx}>
+                  <TableCell>
+                    <Skeleton className="h-4 w-48" />
+                  </TableCell>
+                  <TableCell className="text-right">
+                    <Skeleton className="ml-auto h-8 w-20" />
+                  </TableCell>
+                </TableRow>
+              ))
+            ) : experiences.length === 0 ? (
+              <TableRow>
+                <TableCell colSpan={2} className="p-8 text-center text-muted-foreground">
+                  No work experiences configured.
+                </TableCell>
+              </TableRow>
+            ) : (
+              experiences.map((exp) => (
+                <TableRow key={exp.id}>
+                  <TableCell className="font-medium text-foreground">{exp.title}</TableCell>
+                  <TableCell className="text-right">
+                    <div className="flex justify-end gap-1">
+                      <Button variant="default" size="icon-sm" onClick={() => handleOpenEdit(exp)} aria-label="Edit experience">
+                        <Edit2 size={14} />
+                      </Button>
+                      <Button
+                        variant="destructive"
+                        size="icon-sm"
+                        onClick={() => handleDelete(exp.id)}
+                        aria-label="Delete experience"
+                      >
+                        <Trash2 size={14} />
+                      </Button>
+                    </div>
+                  </TableCell>
+                </TableRow>
+              ))
+            )}
+          </TableBody>
+        </Table>
+      </Card>
 
       {formOpen && (
         <WorkExperienceDrawer open={formOpen} onOpenChange={setFormOpen} editingExperience={editingExp} onSuccess={fetchExperiences} />

@@ -2,6 +2,8 @@
 import { useState, useEffect } from "react";
 import { Plus, Edit2, Trash2 } from "lucide-react";
 import { Button } from "@/shared/ui/button";
+import { Card, CardContent } from "@/shared/ui/card";
+import { Skeleton } from "@/shared/ui/skeleton";
 import { apiClient } from "@/shared/api/client";
 import { Effect } from "effect";
 import { useToast } from "@/shared/ui/toast";
@@ -40,34 +42,59 @@ export function AdminStacksPage() {
   };
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between">
+    <div className="flex flex-col gap-6">
+      <div className="flex flex-col gap-1.5 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h2 className="text-lg tracking-[-0.64px] text-[#111111] font-medium">Tech Stacks</h2>
-          <p className="text-gray-500 mt-1 text-sm">Manage tech stack records</p>
+          <h2 className="text-lg font-semibold tracking-tight">Tech Stacks</h2>
+          <p className="text-sm text-muted-foreground">Manage tech stack records</p>
         </div>
-        <Button onClick={handleOpenCreate} className="bg-[#ff5c06] hover:opacity-90 text-white font-semibold rounded-2xl cursor-pointer">
+        <Button onClick={handleOpenCreate} className="gap-2 self-start">
           <Plus size={16} /> Add Stack
         </Button>
       </div>
 
       {loading ? (
-        <div className="text-center py-8 text-gray-500">Loading...</div>
+        <div className="grid gap-4">
+          {Array.from({ length: 4 }).map((_, idx) => (
+            <Card key={idx} className="py-4">
+              <div className="flex items-center justify-between px-4">
+                <div className="space-y-2">
+                  <Skeleton className="h-4 w-32" />
+                  <Skeleton className="h-3 w-48" />
+                </div>
+                <Skeleton className="h-8 w-20" />
+              </div>
+            </Card>
+          ))}
+        </div>
       ) : stacks.length === 0 ? (
-        <div className="text-center py-8 text-gray-500 italic">No tech stacks configured.</div>
+        <Card>
+          <CardContent className="py-8 text-center text-muted-foreground">No tech stacks configured.</CardContent>
+        </Card>
       ) : (
         <div className="grid gap-4">
           {stacks.map((stack) => (
-            <div key={stack.id} className="flex items-center justify-between p-4 border rounded-lg">
-              <div>
-                <p className="font-medium">{stack.name}</p>
-                <p className="text-sm text-gray-500">{stack.image_logo}</p>
+            <Card key={stack.id} className="py-4">
+              <div className="flex items-center justify-between gap-4 px-4">
+                <div className="min-w-0">
+                  <p className="font-medium text-foreground">{stack.name}</p>
+                  <p className="text-sm text-muted-foreground truncate">{stack.image_logo}</p>
+                </div>
+                <div className="flex shrink-0 gap-1">
+                  <Button variant="default" size="icon-sm" onClick={() => handleOpenEdit(stack)} aria-label="Edit stack">
+                    <Edit2 size={14} />
+                  </Button>
+                  <Button
+                    variant="destructive"
+                    size="icon-sm"
+                    onClick={() => handleDelete(stack.id)}
+                    aria-label="Delete stack"
+                  >
+                    <Trash2 size={14} />
+                  </Button>
+                </div>
               </div>
-              <div className="flex gap-2">
-                <button onClick={() => handleOpenEdit(stack)} className="text-blue-600 hover:underline text-sm">Edit</button>
-                <button onClick={() => handleDelete(stack.id)} className="text-red-600 hover:underline text-sm">Delete</button>
-              </div>
-            </div>
+            </Card>
           ))}
         </div>
       )}

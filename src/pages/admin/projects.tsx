@@ -2,6 +2,8 @@
 import { useState, useEffect } from "react";
 import { Plus, Edit2, Trash2 } from "lucide-react";
 import { Button } from "@/shared/ui/button";
+import { Card } from "@/shared/ui/card";
+import { Badge } from "@/shared/ui/badge";
 import { apiClient } from "@/shared/api/client";
 import { Effect } from "effect";
 import { useToast } from "@/shared/ui/toast";
@@ -108,21 +110,18 @@ export function AdminProjectsPage() {
   };
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between">
+    <div className="flex flex-col gap-6">
+      <div className="flex flex-col gap-1.5 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h2 className="text-lg tracking-[-0.64px] text-[#111111] font-medium">Projects</h2>
-          <p className="text-gray-500 mt-1 text-sm">Manage project records, case stories, tech stack join links, and demo assets</p>
+          <h2 className="text-lg font-semibold tracking-tight">Projects</h2>
+          <p className="text-sm text-muted-foreground">Manage project records, case stories, tech stack join links, and demo assets</p>
         </div>
-        <Button
-          onClick={handleOpenCreate}
-          className="bg-[#ff5c06] hover:opacity-90 text-white font-semibold rounded-2xl shadow-[0_6px_10px_rgba(255,255,255,0.5)_inset,-10px_40px_41px_-4px_rgba(0,0,0,0.01)] cursor-pointer flex items-center gap-2 will-change-transform transition-opacity"
-        >
+        <Button onClick={handleOpenCreate} className="gap-2 self-start">
           <Plus size={16} /> Add Project
         </Button>
       </div>
 
-      <div className="w-full overflow-x-auto border border-gray-200 rounded-lg bg-white">
+      <Card className="overflow-hidden py-0">
         <Table>
           <TableHeader>
             <TableRow>
@@ -138,31 +137,31 @@ export function AdminProjectsPage() {
               Array.from({ length: 5 }).map((_, idx) => (
                 <TableRow key={idx}>
                   <TableCell>
-                    <Skeleton className="h-12 w-20 bg-gray-200" />
+                    <Skeleton className="h-12 w-20" />
                   </TableCell>
                   <TableCell>
-                    <Skeleton className="h-4 w-32 bg-gray-200" />
+                    <Skeleton className="h-4 w-32" />
                   </TableCell>
                   <TableCell>
-                    <Skeleton className="h-4 w-48 bg-gray-200" />
+                    <Skeleton className="h-4 w-48" />
                   </TableCell>
                   <TableCell>
                     <div className="flex gap-1">
-                      <Skeleton className="h-4 w-10 bg-gray-200" />
-                      <Skeleton className="h-4 w-10 bg-gray-200" />
+                      <Skeleton className="h-4 w-10" />
+                      <Skeleton className="h-4 w-10" />
                     </div>
                   </TableCell>
                   <TableCell className="text-right">
                     <div className="flex justify-end gap-2">
-                      <Skeleton className="h-8 w-16 bg-gray-200" />
-                      <Skeleton className="h-8 w-12 bg-gray-200" />
+                      <Skeleton className="h-8 w-16" />
+                      <Skeleton className="h-8 w-12" />
                     </div>
                   </TableCell>
                 </TableRow>
               ))
             ) : projects.length === 0 ? (
               <TableRow>
-                <TableCell colSpan={5} className="p-8 text-center text-gray-500 italic">
+                <TableCell colSpan={5} className="p-8 text-center text-muted-foreground">
                   No projects configured. Click 'Add Project' to get started.
                 </TableCell>
               </TableRow>
@@ -174,64 +173,70 @@ export function AdminProjectsPage() {
                   style={{ animationDelay: `${idx * 60}ms` }}
                 >
                   <TableCell>
-                    <div className="shine-enter w-20 h-12 rounded-lg">
+                    <div className="shine-enter w-20 h-12 rounded-md">
                       <img
                         src={proj.thumbnail_url}
                         alt={proj.title}
-                        className="w-full h-full rounded-lg object-cover border border-gray-200 bg-gray-50"
+                        className="w-full h-full rounded-md object-cover border border-border bg-muted"
                       />
                     </div>
                   </TableCell>
-                  <TableCell className="font-semibold text-[#111111]">{proj.title}</TableCell>
-                  <TableCell className="text-gray-600 text-xs max-w-xs truncate">{proj.description}</TableCell>
-                  <TableCell className="text-gray-500 text-xs space-y-1">
+                  <TableCell className="font-medium text-foreground">{proj.title}</TableCell>
+                  <TableCell className="text-muted-foreground text-xs max-w-xs truncate">{proj.description}</TableCell>
+                  <TableCell className="text-muted-foreground text-xs space-y-1">
                     <div className="flex flex-wrap gap-1">
-                      <button
-                        onClick={() => handleOpenStories(proj)}
-                        className="bg-gray-100 hover:bg-gray-200 text-gray-700 px-1.5 py-0.5 rounded border border-gray-200 font-medium text-[9px] uppercase tracking-wider cursor-pointer transition-all"
+                      <Badge
+                        variant="secondary"
+                        asChild
+                        className="cursor-pointer"
                       >
-                        {proj.stories?.length || 0} Stories
-                      </button>
-                      <button
-                        onClick={() => handleOpenTechStacks(proj)}
-                        className="bg-gray-100 hover:bg-gray-200 text-gray-700 px-1.5 py-0.5 rounded border border-gray-200 font-medium text-[9px] uppercase tracking-wider cursor-pointer transition-all"
-                      >
-                        {proj.tech_stacks?.length || 0} Stacks
-                      </button>
-                      <button
-                        onClick={() => handleOpenGallery(proj)}
-                        className="bg-gray-100 hover:bg-gray-200 text-gray-700 px-1.5 py-0.5 rounded border border-gray-200 font-medium text-[9px] uppercase tracking-wider cursor-pointer transition-all"
-                      >
-                        {proj.images?.length || 0} Gallery
-                      </button>
-                      <button
-                        onClick={() => handleOpenResources(proj)}
-                        className="bg-gray-100 hover:bg-gray-200 text-gray-700 px-1.5 py-0.5 rounded border border-gray-200 font-medium text-[9px] uppercase tracking-wider cursor-pointer transition-all"
-                      >
-                        {proj.resources?.length || 0} Links
-                      </button>
+                        <button onClick={() => handleOpenStories(proj)}>
+                          {proj.stories?.length || 0} Stories
+                        </button>
+                      </Badge>
+                      <Badge variant="secondary" asChild className="cursor-pointer">
+                        <button onClick={() => handleOpenTechStacks(proj)}>
+                          {proj.tech_stacks?.length || 0} Stacks
+                        </button>
+                      </Badge>
+                      <Badge variant="secondary" asChild className="cursor-pointer">
+                        <button onClick={() => handleOpenGallery(proj)}>
+                          {proj.images?.length || 0} Gallery
+                        </button>
+                      </Badge>
+                      <Badge variant="secondary" asChild className="cursor-pointer">
+                        <button onClick={() => handleOpenResources(proj)}>
+                          {proj.resources?.length || 0} Links
+                        </button>
+                      </Badge>
                     </div>
                   </TableCell>
-                  <TableCell className="text-right space-x-1 whitespace-nowrap">
-                    <button
-                      onClick={() => handleOpenEdit(proj)}
-                      className="p-1.5 text-gray-500 hover:text-[#111111] hover:bg-gray-100 rounded cursor-pointer transition-all inline-flex items-center gap-1 text-xs font-semibold"
-                    >
-                      <Edit2 size={12} /> Edit
-                    </button>
-                    <button
-                      onClick={() => handleDelete(proj.id)}
-                      className="p-1.5 text-red-500 hover:text-red-600 hover:bg-red-50 rounded cursor-pointer transition-all inline-flex items-center gap-1 text-xs font-semibold"
-                    >
-                      <Trash2 size={12} /> Delete
-                    </button>
+                  <TableCell className="text-right whitespace-nowrap">
+                    <div className="flex justify-end gap-1">
+                      <Button
+                        variant="default"
+                        size="icon-sm"
+                        onClick={() => handleOpenEdit(proj)}
+                        aria-label="Edit project"
+                      >
+                        <Edit2 size={14} />
+                      </Button>
+                      <Button
+                        variant="destructive"
+                        size="icon-sm"
+                        onClick={() => handleDelete(proj.id)}
+                        aria-label="Delete project"
+                      >
+                        <Trash2 size={14} />
+                      </Button>
+                    </div>
                   </TableCell>
                 </TableRow>
               ))
             )}
           </TableBody>
         </Table>
-      </div>
+      </Card>
 
       <ProjectDrawer
         open={formOpen}
