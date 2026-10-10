@@ -1,15 +1,15 @@
-// ponytail: separate project gallery manager dialog component
+// ponytail: separate project gallery manager sheet component
 import { useState } from "react";
 import { Loader2, Trash2, Image as ImageIcon } from "lucide-react";
 import { Button } from "@/shared/ui/button";
-import { Label } from "@/shared/ui/label";
+import { FormField } from "@/shared/ui/form";
 import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogFooter,
-} from "@/shared/ui/dialog";
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetFooter,
+} from "@/shared/ui/sheet";
 import { apiClient } from "@/shared/api/client";
 import { Effect } from "effect";
 import { useToast } from "@/shared/ui/toast";
@@ -93,19 +93,18 @@ export function ProjectGalleryDrawer({
   };
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-md">
-        <DialogHeader className="border-b border-neutral-200 pb-3">
-          <DialogTitle className="font-sans text-lg font-bold text-neutral-955 flex items-center gap-1.5">
-            <ImageIcon size={18} className="text-[#ec7211]" /> Project Gallery
-          </DialogTitle>
-          <p className="text-xs text-[#ec7211] font-semibold mt-0.5">Project: {project.title}</p>
-        </DialogHeader>
+    <Sheet open={open} onOpenChange={onOpenChange}>
+      <SheetContent>
+        <SheetHeader>
+          <SheetTitle>
+            <ImageIcon size={18} className="text-foreground" /> Project Gallery
+          </SheetTitle>
+          <p className="text-xs text-muted-foreground font-medium mt-0.5">Project: {project.title}</p>
+        </SheetHeader>
 
-        <form onSubmit={handleAddProjectImage}>
-          <div className="space-y-4 p-6">
-            <div className="space-y-1.5">
-              <Label className="text-neutral-700 font-semibold text-xs uppercase tracking-wider block">Add Gallery Image</Label>
+        <form onSubmit={handleAddProjectImage} className="flex min-h-0 flex-1 flex-col">
+          <div className="min-h-0 flex-1 space-y-4 overflow-y-auto px-6 py-6">
+            <FormField label="Add Gallery Image" htmlFor="gallery-image">
               <FileUploader
                 onFileSelect={(file) => setSelectedFile(file)}
                 loading={galleryUploading}
@@ -113,13 +112,15 @@ export function ProjectGalleryDrawer({
                 onRemovePreview={() => setSelectedFile(null)}
                 subLabel="Drag & drop or click to add gallery images (PNG, JPG, SVG)"
               />
-            </div>
+            </FormField>
 
             <div className="space-y-2">
-              <Label className="text-neutral-700 font-semibold text-xs uppercase tracking-wider block">Existing Images</Label>
+              <h4 className="text-xs font-bold text-foreground uppercase tracking-wider">
+                Existing Images
+              </h4>
               <div className="grid grid-cols-4 gap-3 max-h-[140px] overflow-y-auto pr-1">
                 {project.images?.map((img) => (
-                  <div key={img.id} className="relative group rounded-lg overflow-hidden border border-neutral-200 h-14 bg-white flex items-center justify-center">
+                  <div key={img.id} className="relative group rounded-lg overflow-hidden border border-border h-14 bg-white flex items-center justify-center">
                     <img src={img.image_url} alt="Gallery" className="w-full h-full object-cover" />
                     <button
                       type="button"
@@ -131,31 +132,31 @@ export function ProjectGalleryDrawer({
                   </div>
                 ))}
                 {(!project.images || project.images.length === 0) && (
-                  <p className="col-span-4 text-xs text-neutral-400 italic text-center py-2">No gallery images uploaded.</p>
+                  <p className="col-span-4 text-xs text-muted-foreground italic text-center py-2">No gallery images uploaded.</p>
                 )}
               </div>
             </div>
           </div>
 
-          <DialogFooter>
+          <SheetFooter className="flex flex-col!">
             <Button
               type="button"
+              variant="outline"
               onClick={() => onOpenChange(false)}
-              className="bg-neutral-100 hover:bg-neutral-200 text-neutral-700! font-semibold rounded-lg border border-neutral-300 cursor-pointer"
             >
               Cancel
             </Button>
             <Button
               type="submit"
-              className="bg-[#ec7211] hover:bg-[#d65f0e] text-white font-bold rounded-lg cursor-pointer flex items-center gap-1.5"
+              className="gap-1.5"
               disabled={galleryUploading || !selectedFile}
             >
               {galleryUploading && <Loader2 size={12} className="animate-spin" />}
               Upload Image
             </Button>
-          </DialogFooter>
+          </SheetFooter>
         </form>
-      </DialogContent>
-    </Dialog>
+      </SheetContent>
+    </Sheet>
   );
 }

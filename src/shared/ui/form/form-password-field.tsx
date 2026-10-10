@@ -54,7 +54,7 @@ export function FormPasswordField<TFieldValues extends FieldValues>({
     >
       <div className="relative">
         {prefixIcon && (
-          <span className="absolute left-3 top-1/2 -translate-y-1/2 text-neutral-400">
+          <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground">
             {prefixIcon}
           </span>
         )}
@@ -63,7 +63,7 @@ export function FormPasswordField<TFieldValues extends FieldValues>({
           type={showPassword ? 'text' : 'password'}
           placeholder={placeholder}
           disabled={disabled}
-          className={cn('pr-10 bg-white border-neutral-300 focus:border-[#ec7211] focus:ring-1 focus:ring-[#ec7211] text-neutral-900 placeholder:text-neutral-400 rounded-lg text-sm h-10', prefixIcon && 'pl-10', inputClassName)}
+          className={cn('pr-10', prefixIcon && 'pl-10', inputClassName)}
           {...register(name, { onChange })}
         />
 
@@ -71,7 +71,7 @@ export function FormPasswordField<TFieldValues extends FieldValues>({
           type="button"
           onClick={() => setShowPassword((prev) => !prev)}
           disabled={disabled}
-          className="absolute inset-y-0 right-0 flex items-center justify-center px-3 text-neutral-400 hover:text-neutral-600 disabled:pointer-events-none cursor-pointer"
+          className="absolute inset-y-0 right-0 flex items-center justify-center px-3 text-muted-foreground hover:text-foreground disabled:pointer-events-none cursor-pointer"
           aria-label={showPassword ? 'Hide password' : 'Show password'}
         >
           {showPassword ? (

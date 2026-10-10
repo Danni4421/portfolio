@@ -1,19 +1,28 @@
-// ponytail: separate project tech stacks manager dialog component
+// ponytail: separate project tech stacks manager sheet component
 import { useState, useEffect } from "react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
 import { Loader2, Trash2, Layers } from "lucide-react";
 import { Button } from "@/shared/ui/button";
-import { Label } from "@/shared/ui/label";
+import { FormSelectField } from "@/shared/ui/form";
 import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogFooter,
-} from "@/shared/ui/dialog";
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetFooter,
+} from "@/shared/ui/sheet";
 import { apiClient } from "@/shared/api/client";
 import { Effect } from "effect";
 import { useToast } from "@/shared/ui/toast";
 import type { Project } from "@/entities/project/model/types";
+
+const linkStackSchema = z.object({
+  stack_id: z.string().min(1, "Select a tech stack"),
+});
+
+type LinkStackFormValues = z.infer<typeof linkStackSchema>;
 
 interface TechStack {
   id: string;
@@ -40,20 +49,27 @@ export function ProjectTechStacksDrawer({
   onSuccess,
 }: ProjectTechStacksDrawerProps) {
   const { toast } = useToast();
-  const [selectedStackId, setSelectedStackId] = useState("");
   const [stackLoading, setStackLoading] = useState(false);
+  const form = useForm<LinkStackFormValues>({
+    resolver: zodResolver(linkStackSchema),
+    defaultValues: { stack_id: "" },
+  });
 
   useEffect(() => {
-    if (allStacks.length > 0 && !selectedStackId) {
-      setSelectedStackId(allStacks[0].id);
+    if (allStacks.length > 0 && !form.getValues("stack_id")) {
+      form.setValue("stack_id", allStacks[0].id);
     }
-  }, [allStacks]);
+  }, [allStacks, form]);
 
   if (!project) return null;
 
-  const handleLinkStack = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!selectedStackId) return;
+  const stackOptions =
+    allStacks.length > 0
+      ? allStacks.map((s) => ({ value: s.id, label: s.name }))
+      : [{ value: "", label: "No tech stacks configured" }];
+
+  const handleLinkStack = form.handleSubmit((values) => {
+    const selectedStackId = values.stack_id;
 
     if (project.tech_stacks?.some((s) => s.id === selectedStackId)) {
       toast({ title: "Link Error", description: "Tech stack already linked to this project", variant: "destructive" });
@@ -86,7 +102,7 @@ export function ProjectTechStacksDrawer({
       .finally(() => {
         setStackLoading(false);
       });
-  };
+  });
 
   const handleUnlinkStack = (stackId: string) => {
     Effect.runPromise(apiClient.get<{ success: boolean; data: Record<string, unknown>[] }>("/api/v1/project-tech-stacks"))
@@ -114,75 +130,72 @@ export function ProjectTechStacksDrawer({
   };
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-md">
-        <DialogHeader className="border-b border-neutral-200 pb-3">
-          <DialogTitle className="font-sans text-lg font-bold text-neutral-955 flex items-center gap-1.5">
-            <Layers size={18} className="text-[#ec7211]" /> Project Tech Stacks
-          </DialogTitle>
-          <p className="text-xs text-[#ec7211] font-semibold mt-0.5">Project: {project.title}</p>
-        </DialogHeader>
+    <Sheet open={open} onOpenChange={onOpenChange}>
+      <SheetContent>
+        <SheetHeader>
+          <SheetTitle>
+            <Layers size={18} className="text-foreground" /> Project Tech Stacks
+          </SheetTitle>
+          <p className="text-xs text-muted-foreground font-medium mt-0.5">Project: {project.title}</p>
+        </SheetHeader>
 
-        <form onSubmit={handleLinkStack}>
-          <div className="space-y-4 p-6">
-            <div className="space-y-1.5">
-              <Label className="text-neutral-700 font-semibold text-xs uppercase tracking-wider block">Link Tech Stack</Label>
-              <select
-                value={selectedStackId}
-                onChange={(e) => setSelectedStackId(e.target.value)}
-                className="bg-white border border-neutral-300 text-neutral-900 text-sm rounded-lg p-2 w-full focus:border-[#ec7211] focus:ring-1 focus:ring-[#ec7211] outline-none cursor-pointer h-9"
-              >
-                {allStacks.map((s) => (
-                  <option key={s.id} value={s.id}>
-                    {s.name}
-                  </option>
-                ))}
-                {allStacks.length === 0 && <option value="">No tech stacks configured</option>}
-              </select>
-            </div>
+        <form onSubmit={handleLinkStack} className="flex min-h-0 flex-1 flex-col">
+          <div className="min-h-0 flex-1 space-y-4 overflow-y-auto px-6 py-6">
+            <FormSelectField
+              name="stack_id"
+              label="Link Tech Stack"
+              options={stackOptions}
+              register={form.register}
+              error={form.formState.errors.stack_id}
+              required
+              className="space-y-1.5"
+              selectClassName="h-9"
+            />
 
             <div className="space-y-2">
-              <Label className="text-neutral-700 font-semibold text-xs uppercase tracking-wider block">Linked Tech Stacks</Label>
+              <h4 className="text-xs font-bold text-foreground uppercase tracking-wider">
+                Linked Tech Stacks
+              </h4>
               <div className="flex flex-wrap gap-2 max-h-[160px] overflow-y-auto pr-1">
                 {project.tech_stacks?.map((stack) => (
-                  <div key={stack.id} className="flex items-center gap-1.5 pl-2 pr-1.5 py-1 bg-white border border-neutral-200 rounded-full shadow-xs text-xs font-medium">
+                  <div key={stack.id} className="flex items-center gap-1.5 pl-2 pr-1.5 py-1 bg-white border border-border rounded-full shadow-xs text-xs font-medium">
                     <img src={stack.image_logo} alt={stack.name} className="w-4.5 h-4.5 object-contain" />
-                    <span className="text-neutral-800">{stack.name}</span>
+                    <span className="text-foreground">{stack.name}</span>
                     <button
                       type="button"
                       onClick={() => handleUnlinkStack(stack.id)}
-                      className="p-0.5 text-neutral-400 hover:text-red-655 hover:bg-neutral-50 rounded-full transition-all cursor-pointer"
+                      className="p-0.5 text-muted-foreground hover:text-destructive hover:bg-muted/50 rounded-full transition-all cursor-pointer"
                     >
                       <Trash2 size={11} />
                     </button>
                   </div>
                 ))}
                 {(!project.tech_stacks || project.tech_stacks.length === 0) && (
-                  <p className="text-xs text-neutral-400 italic mt-2 text-center w-full">No tech stacks linked.</p>
+                  <p className="text-xs text-muted-foreground italic mt-2 text-center w-full">No tech stacks linked.</p>
                 )}
               </div>
             </div>
           </div>
 
-          <DialogFooter>
+          <SheetFooter className="flex flex-col!">
             <Button
               type="button"
+              variant="outline"
               onClick={() => onOpenChange(false)}
-              className="bg-neutral-100 hover:bg-neutral-200 text-neutral-700! font-semibold rounded-lg border border-neutral-300 cursor-pointer"
             >
               Cancel
             </Button>
             <Button
               type="submit"
-              className="bg-[#ec7211] hover:bg-[#d65f0e] text-white font-bold rounded-lg cursor-pointer flex items-center gap-1.5"
+              className="gap-1.5"
               disabled={stackLoading}
             >
               {stackLoading && <Loader2 size={12} className="animate-spin" />}
               Link Stack
             </Button>
-          </DialogFooter>
+          </SheetFooter>
         </form>
-      </DialogContent>
-    </Dialog>
+      </SheetContent>
+    </Sheet>
   );
 }

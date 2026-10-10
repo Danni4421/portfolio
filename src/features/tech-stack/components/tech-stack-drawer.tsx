@@ -1,17 +1,16 @@
-// ponytail: separate tech stack edit/create dialog component
+// ponytail: separate tech stack edit/create sheet component
 
 import { Loader2 } from "lucide-react";
 import { Button } from "@/shared/ui/button";
-import { Label } from "@/shared/ui/label";
 import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogFooter,
-} from "@/shared/ui/dialog";
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetFooter,
+} from "@/shared/ui/sheet";
 import { useTechStackForm } from "@/features/tech-stack/hooks/use-tech-stack-form";
-import { FormTextField } from "@/shared/ui/form";
+import { FormField, FormTextField } from "@/shared/ui/form";
 import { FileUploader } from "@/shared/ui/file-uploader";
 
 interface TechStack {
@@ -47,16 +46,16 @@ export function TechStackDrawer({
   const imageLogo = form.watch("imageLogo");
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-md">
-        <DialogHeader className="border-b border-neutral-200 pb-3">
-          <DialogTitle className="font-sans text-lg font-bold text-neutral-950">
+    <Sheet open={open} onOpenChange={onOpenChange}>
+      <SheetContent>
+        <SheetHeader>
+          <SheetTitle>
             {editingStack ? "Edit Tech Stack" : "Create Tech Stack"}
-          </DialogTitle>
-        </DialogHeader>
+          </SheetTitle>
+        </SheetHeader>
 
-        <form onSubmit={onSubmit}>
-          <div className="space-y-4 p-6">
+        <form onSubmit={onSubmit} className="flex min-h-0 flex-1 flex-col">
+          <div className="min-h-0 flex-1 space-y-4 overflow-y-auto px-6 py-6">
             <FormTextField
               name="name"
               label="Stack Name"
@@ -65,7 +64,6 @@ export function TechStackDrawer({
               error={form.formState.errors.name}
               required
               className="space-y-1.5"
-              inputClassName="bg-white border-neutral-300 focus:border-[#ec7211] focus:ring-1 focus:ring-[#ec7211] text-neutral-900 rounded-lg text-sm"
             />
 
             <FormTextField
@@ -76,7 +74,6 @@ export function TechStackDrawer({
               error={form.formState.errors.redirectUrl}
               required
               className="space-y-1.5"
-              inputClassName="bg-white border-neutral-300 focus:border-[#ec7211] focus:ring-1 focus:ring-[#ec7211] text-neutral-900 rounded-lg text-sm"
             />
 
             <FormTextField
@@ -87,10 +84,8 @@ export function TechStackDrawer({
               error={form.formState.errors.imageLogo}
               required
               className="space-y-1.5"
-              inputClassName="bg-white border-neutral-300 focus:border-[#ec7211] focus:ring-1 focus:ring-[#ec7211] text-neutral-900 rounded-lg text-sm"
             />
-            <div className="mt-2">
-              <Label className="text-neutral-700 font-semibold text-xs uppercase tracking-wider mb-1.5 block">OR UPLOAD FILE</Label>
+            <FormField label="OR UPLOAD FILE" htmlFor="imageLogo" className="mt-2">
               <FileUploader
                 onFileSelect={handleFileUpload}
                 previewUrl={imageLogo}
@@ -98,28 +93,28 @@ export function TechStackDrawer({
                 onRemovePreview={() => form.setValue("imageLogo", "")}
                 subLabel="Upload logo to auto-populate URL (PNG, JPG, SVG)"
               />
-            </div>
+            </FormField>
           </div>
 
-          <DialogFooter>
+          <SheetFooter className="flex flex-col!">
             <Button
               type="button"
+              variant="outline"
               onClick={() => onOpenChange(false)}
-              className="bg-neutral-100 hover:bg-neutral-200 text-neutral-700! font-semibold rounded-lg border border-neutral-300 cursor-pointer"
             >
               Cancel
             </Button>
             <Button
               type="submit"
-              className="bg-[#ec7211] hover:bg-[#d65f0e] text-white font-bold rounded-lg cursor-pointer flex items-center gap-1.5"
+              className="gap-1.5"
               disabled={submitting || uploading}
             >
               {submitting && <Loader2 size={12} className="animate-spin" />}
               Submit
             </Button>
-          </DialogFooter>
+          </SheetFooter>
         </form>
-      </DialogContent>
-    </Dialog>
+      </SheetContent>
+    </Sheet>
   );
 }

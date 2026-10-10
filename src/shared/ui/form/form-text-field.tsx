@@ -52,7 +52,7 @@ export function FormTextField<TFieldValues extends FieldValues>({
     >
       <div className="relative">
         {prefixIcon && (
-          <span className="absolute left-3 top-1/2 -translate-y-1/2 text-neutral-400">
+          <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground">
             {prefixIcon}
           </span>
         )}
