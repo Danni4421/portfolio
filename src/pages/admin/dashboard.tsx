@@ -54,10 +54,10 @@ export function AdminDashboardPage() {
 
   if (loadingProfile) {
     return (
-      <div className="min-h-screen bg-white flex items-center justify-center text-gray-500 font-sans">
+      <div className="min-h-screen bg-background flex items-center justify-center text-muted-foreground font-sans">
         <div className="flex flex-col items-center gap-4">
           <LoadingAnimation />
-          <span className="font-sans text-xs uppercase tracking-wider font-semibold text-gray-400">Loading Console...</span>
+          <span className="font-sans text-xs uppercase tracking-wider font-medium text-muted-foreground">Loading Console...</span>
         </div>
       </div>
     );
@@ -76,18 +76,20 @@ export function AdminDashboardPage() {
       <AdminSidebar profile={profile} onLogout={handleLogout} />
       <SidebarRail />
       <SidebarInset>
-        <header className="h-14 border-b border-gray-100 bg-white px-6 flex items-center justify-between shrink-0 select-none">
-          <div className="flex items-center gap-3 text-xs text-gray-400 font-medium font-sans">
-            <SidebarTrigger />
-            <div className="h-4 w-px bg-gray-200" />
-            <span>Console</span>
-            <ChevronRight size={12} className="opacity-70" />
-            <span className="text-[#111111] font-semibold">{pageTitle}</span>
+        <header className="bg-card border-b border-border sticky top-0 z-40 shrink-0 select-none">
+          <div className="flex items-center gap-4 px-4 py-2 sm:px-6">
+            <SidebarTrigger className="[&_svg]:size-4!" />
+            <div className="hidden h-4 w-px bg-border sm:block" />
+            <nav className="hidden items-center gap-1.5 text-sm sm:flex">
+              <span className="text-muted-foreground">Console</span>
+              <ChevronRight size={14} className="text-muted-foreground/70" />
+              <span className="text-foreground font-medium">{pageTitle}</span>
+            </nav>
           </div>
         </header>
 
-        <main className="flex-1 p-8 md:p-10 overflow-y-auto">
-          <div className="max-w-5xl mx-auto">
+        <main className="flex-1 overflow-y-auto">
+          <div className="mx-auto size-full max-w-360 px-4 py-6 sm:px-6">
             <Outlet context={{ profile, setProfile }} />
           </div>
         </main>

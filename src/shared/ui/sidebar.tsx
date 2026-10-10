@@ -125,7 +125,7 @@ export const SidebarProvider = React.forwardRef<
             } as React.CSSProperties
           }
           className={cn(
-            "group/sidebar-wrapper flex min-h-screen w-full text-[#111111] bg-white",
+            "group/sidebar-wrapper flex min-h-screen w-full bg-background text-foreground",
             className
           )}
           ref={ref}
@@ -164,7 +164,7 @@ export const Sidebar = React.forwardRef<
       return (
         <div
           className={cn(
-            "flex h-full w-[var(--sidebar-width)] flex-col bg-white border-r border-gray-200",
+            "flex h-full w-[var(--sidebar-width)] flex-col bg-sidebar border-r border-sidebar-border",
             className
           )}
           ref={ref}
@@ -187,7 +187,7 @@ export const Sidebar = React.forwardRef<
             ref={ref}
             style={{ width: SIDEBAR_WIDTH_MOBILE }}
             className={cn(
-              "relative flex h-full flex-col bg-white border-r border-gray-200 p-4 shadow-xl animate-in slide-in-from-left duration-200",
+              "relative flex h-full flex-col bg-sidebar border-r border-sidebar-border p-4 shadow-xl animate-in slide-in-from-left duration-200",
               className
             )}
             {...props}
@@ -201,7 +201,7 @@ export const Sidebar = React.forwardRef<
     return (
       <div
         ref={ref}
-        className="group peer hidden md:block text-[#111111]"
+        className="group peer hidden md:block text-sidebar-foreground"
         data-state={state}
         data-collapsible={state === "collapsed" ? collapsible : ""}
         data-variant={variant}
@@ -216,7 +216,7 @@ export const Sidebar = React.forwardRef<
         />
         <div
           className={cn(
-            "duration-200 fixed inset-y-0 z-10 hidden h-screen transition-all md:flex flex-col bg-white border-r border-gray-200",
+            "duration-200 fixed inset-y-0 z-10 hidden h-screen transition-all md:flex flex-col bg-sidebar border-r border-sidebar-border",
             side === "left" ? "left-0" : "right-0",
             "w-[var(--sidebar-width)]",
             "group-data-[state=collapsed]:w-[var(--sidebar-width-icon)]",
@@ -226,7 +226,7 @@ export const Sidebar = React.forwardRef<
           )}
           {...props}
         >
-          <div className="flex h-full w-full flex-col bg-white select-none">
+          <div className="flex h-full w-full flex-col bg-sidebar select-none">
             {children}
           </div>
         </div>
@@ -247,7 +247,7 @@ export const SidebarTrigger = React.forwardRef<
         ref={ref}
         data-sidebar="trigger"
         className={cn(
-          "inline-flex h-7 w-7 items-center justify-center rounded-md border border-gray-200 bg-white hover:bg-gray-50 cursor-pointer transition-colors outline-none",
+          "inline-flex h-7 w-7 items-center justify-center rounded-md border border-border bg-background hover:bg-muted cursor-pointer transition-colors outline-none",
           className
         )}
         onClick={(event) => {
@@ -256,7 +256,7 @@ export const SidebarTrigger = React.forwardRef<
         }}
         {...props}
       >
-        <PanelLeft size={14} className="text-gray-500" />
+        <PanelLeft size={14} className="text-muted-foreground" />
         <span className="sr-only">Toggle Sidebar</span>
       </button>
     )
@@ -289,7 +289,7 @@ export const SidebarHeader = React.forwardRef<
     <div
       ref={ref}
       data-sidebar="header"
-      className={cn("flex flex-col gap-2 p-4 border-b border-gray-200 shrink-0", className)}
+      className={cn("flex flex-col gap-2 p-4 border-b border-sidebar-border shrink-0", className)}
       {...props}
     />
   )
@@ -304,7 +304,7 @@ export const SidebarFooter = React.forwardRef<
     <div
       ref={ref}
       data-sidebar="footer"
-      className={cn("flex flex-col gap-2 p-4 border-t border-gray-200 shrink-0", className)}
+      className={cn("flex flex-col gap-2 p-4 border-t border-sidebar-border shrink-0", className)}
       {...props}
     />
   )
@@ -337,7 +337,7 @@ export const SidebarGroupLabel = React.forwardRef<
       ref={ref}
       data-sidebar="group-label"
       className={cn(
-        "px-2 text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-0.5",
+        "px-2 text-[10px] font-semibold text-muted-foreground uppercase tracking-wider mb-0.5",
         className
       )}
       {...props}
@@ -369,7 +369,7 @@ export const SidebarMenu = React.forwardRef<
     <ul
       ref={ref}
       data-sidebar="menu"
-      className={cn("flex w-full flex-col gap-0.5 list-none m-0 p-0 text-gray-500!", className)}
+      className={cn("flex w-full flex-col gap-0.5 list-none m-0 p-0", className)}
       {...props}
     />
   )
@@ -407,10 +407,10 @@ export const SidebarMenuButton = React.forwardRef<
       data-sidebar="menu-button"
       data-active={isActive}
       className={cn(
-        "flex w-full items-center gap-3 rounded-md px-3 py-2 text-sm text-left transition-colors outline-none cursor-pointer border border-transparent select-none",
+        "hover:bg-sidebar-accent hover:text-sidebar-accent-foreground focus-visible:bg-sidebar-accent focus-visible:text-sidebar-accent-foreground [&>svg]:size-4 [&>svg]:shrink-0 flex w-full items-center gap-3 rounded-md px-3 py-2 text-sm text-left transition-colors outline-none cursor-pointer border border-transparent select-none",
         isActive
-          ? "bg-gray-100 text-[#111111]! font-semibold shadow-xs"
-          : "text-gray-500! hover:text-[#111111]! hover:bg-gray-50",
+          ? "bg-sidebar-accent text-sidebar-accent-foreground font-medium shadow-xs"
+          : "text-muted-foreground",
         state === "collapsed" ? "justify-center px-0" : "",
         className
       )}
@@ -453,7 +453,7 @@ export const SidebarInset = React.forwardRef<
     <main
       ref={ref}
       className={cn(
-        "relative flex min-h-svh flex-1 flex-col bg-white",
+        "relative flex min-h-svh flex-1 flex-col bg-background",
         "peer-data-[variant=inset]:min-h-[calc(100svh-theme(spacing.4))] md:peer-data-[variant=inset]:m-2 md:peer-data-[state=collapsed]:peer-data-[variant=inset]:ml-2 md:peer-data-[variant=inset]:ml-0 md:peer-data-[variant=inset]:rounded-xl md:peer-data-[variant=inset]:shadow",
         className
       )}

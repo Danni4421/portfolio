@@ -21,6 +21,8 @@ import {
   SidebarFooter,
   useSidebar
 } from "@/shared/ui/sidebar";
+import { Button } from "@/shared/ui/button";
+import { Blobatar } from "@blobatar/react";
 
 interface UserProfile {
   email: string;
@@ -59,7 +61,7 @@ export function AdminSidebar({ profile, onLogout }: AdminSidebarProps) {
       <SidebarMenuItem key={item.path}>
         <SidebarMenuButton asChild isActive={isActive}>
           <Link to={item.path}>
-            <Icon size={16} className={isActive ? "text-[#111111]" : "text-gray-400"} />
+            <Icon size={16} />
             {state !== "collapsed" && <span>{item.label}</span>}
           </Link>
         </SidebarMenuButton>
@@ -71,14 +73,13 @@ export function AdminSidebar({ profile, onLogout }: AdminSidebarProps) {
     <Sidebar>
       <SidebarHeader>
         <div className="flex items-center gap-2.5">
-          <div className="w-6 h-6 rounded-md bg-[#111111] flex items-center justify-center text-white font-bold text-xs shrink-0">
-            A
-          </div>
-          {state !== "collapsed" && (
-            <div className="flex flex-col min-w-0">
-              <span className="text-sm font-bold text-[#111111] tracking-tight leading-none">Console</span>
-            </div>
-          )}
+          <Blobatar
+            name="simone"
+            animate="always"
+            background="circle"
+            amplitude={20}
+            className="block w-12 h-12"
+          />
         </div>
       </SidebarHeader>
 
@@ -108,24 +109,26 @@ export function AdminSidebar({ profile, onLogout }: AdminSidebarProps) {
             <img
               src={profile?.avatar_url || "/apple-touch-icon.png"}
               alt="Avatar"
-              className="w-9 h-9 rounded-full object-cover bg-gray-100 border border-gray-200 shrink-0"
+              className="w-9 h-9 rounded-full object-cover bg-muted border border-sidebar-border shrink-0"
             />
             {state !== "collapsed" && (
               <div className="flex flex-col min-w-0">
-                <span className="text-xs font-semibold text-[#111111] truncate leading-none mb-0.5">
+                <span className="text-sm font-medium text-sidebar-foreground truncate leading-none mb-0.5">
                   {profile?.name}
                 </span>
-                <span className="text-[10px] text-gray-400 truncate">{profile?.email}</span>
+                <span className="text-xs text-muted-foreground truncate">{profile?.email}</span>
               </div>
             )}
           </div>
-          <button
+          <Button
+            variant="outline"
+            size="sm"
             onClick={onLogout}
-            className="flex items-center justify-center gap-2 w-full py-1.5 border border-gray-200 hover:bg-gray-50 text-gray-700 font-bold rounded-lg text-xs transition-colors cursor-pointer"
+            className="w-full justify-center gap-2"
           >
-            <LogOut size={12} className="text-gray-400 shrink-0" />
+            <LogOut size={14} className="shrink-0" />
             {state !== "collapsed" && <span>Log Out</span>}
-          </button>
+          </Button>
         </div>
       </SidebarFooter>
     </Sidebar>

@@ -182,11 +182,11 @@ export function MarkdownEditor({
   return (
     <div
       className={cn(
-        "overflow-hidden rounded-xl border border-neutral-200 bg-white transition-shadow focus-within:border-[#ec7211] focus-within:ring-1 focus-within:ring-[#ec7211]/30",
+        "overflow-hidden rounded-xl border border-border bg-card transition-shadow focus-within:border-ring focus-within:ring-1 focus-within:ring-ring/30",
         className
       )}
     >
-      <div className="flex items-center gap-0.5 overflow-x-auto border-b border-neutral-200 bg-neutral-50 px-2 py-1.5">
+      <div className="flex items-center gap-0.5 overflow-x-auto border-b border-border bg-muted/50 px-2 py-1.5">
         {TOOLS.map((tool) => (
           <button
             key={tool.label}
@@ -195,7 +195,7 @@ export function MarkdownEditor({
             aria-label={tool.label}
             onMouseDown={(e) => e.preventDefault()}
             onClick={() => runTool(tool.action)}
-            className="flex h-7 w-7 shrink-0 items-center justify-center rounded-md text-neutral-500 transition-colors hover:bg-neutral-200 hover:text-neutral-900 cursor-pointer"
+            className="flex h-7 w-7 shrink-0 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-accent hover:text-foreground cursor-pointer"
           >
             <tool.icon size={14} />
           </button>
@@ -210,8 +210,8 @@ export function MarkdownEditor({
               className={cn(
                 "h-7 rounded-md px-2.5 text-xs font-medium transition-colors cursor-pointer",
                 mode === m
-                  ? "bg-white text-neutral-900 shadow-sm ring-1 ring-neutral-200"
-                  : "text-neutral-500 hover:text-neutral-800"
+                  ? "bg-card text-foreground shadow-sm ring-1 ring-border"
+                  : "text-muted-foreground hover:text-foreground"
               )}
             >
               {MODE_LABEL[m]}
@@ -222,7 +222,7 @@ export function MarkdownEditor({
 
       <div
         className={cn(
-          split && "grid grid-cols-1 md:grid-cols-2 divide-y md:divide-y-0 md:divide-x divide-neutral-200"
+          split && "grid grid-cols-1 md:grid-cols-2 divide-y md:divide-y-0 md:divide-x divide-border"
         )}
       >
         {showWrite && (
@@ -235,19 +235,19 @@ export function MarkdownEditor({
             placeholder={placeholder}
             autoFocus={autoFocus}
             spellCheck
-            className="block w-full resize-y bg-white px-4 py-3.5 font-serif text-[15px] leading-[1.7] text-neutral-900 outline-none placeholder:text-neutral-400"
+            className="block w-full resize-y bg-card px-4 py-3.5 font-serif text-[15px] leading-[1.7] text-foreground outline-none placeholder:text-muted-foreground"
             style={{ minHeight }}
           />
         )}
 
         {showPreview && (
-          <div className="overflow-y-auto bg-white px-4 py-3.5" style={{ minHeight }}>
+          <div className="overflow-y-auto bg-card px-4 py-3.5" style={{ minHeight }}>
             {value.trim() ? (
               <div className="prose prose-sm prose-neutral max-w-none [&>*:first-child]:mt-0 [&>*:last-child]:mb-0">
                 <Markdown remarkPlugins={[remarkGfm]}>{value}</Markdown>
               </div>
             ) : (
-              <p className="text-sm italic text-neutral-400">Nothing to preview yet.</p>
+              <p className="text-sm italic text-muted-foreground">Nothing to preview yet.</p>
             )}
           </div>
         )}
