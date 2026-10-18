@@ -7,6 +7,7 @@ import { Skeleton } from "@/shared/ui/skeleton";
 import { apiClient } from "@/shared/api/client";
 import { Effect } from "effect";
 import { useToast } from "@/shared/ui/toast";
+import { ConfirmDialog } from "@/shared/ui/confirm-dialog";
 import { TechStackDrawer } from "@/features/tech-stack/components/tech-stack-drawer";
 import type { TechStack } from "@/entities/tech-stack/model/types";
 
@@ -16,6 +17,8 @@ export function AdminStacksPage() {
   const [loading, setLoading] = useState(true);
   const [formOpen, setFormOpen] = useState(false);
   const [editingStack, setEditingStack] = useState<TechStack | null>(null);
+  const [deleteId, setDeleteId] = useState<string | null>(null);
+  const [deleting, setDeleting] = useState(false);
 
   const fetchStacks = () => {
     setLoading(true);
@@ -33,12 +36,13 @@ export function AdminStacksPage() {
   const handleOpenCreate = () => { setEditingStack(null); setFormOpen(true); };
   const handleOpenEdit = (stack: TechStack) => { setEditingStack(stack); setFormOpen(true); };
 
-  const handleDelete = (id: string) => {
-    if (window.confirm("Delete stack permanently?")) {
-      Effect.runPromise(apiClient.delete(`/api/v1/tech-stacks/${id}`))
-        .then(() => { fetchStacks(); toast({ title: "Deleted", description: "Stack deleted", variant: "success" }); })
-        .catch((err) => toast({ title: "Error", description: err.message, variant: "destructive" }));
-    }
+  const handleDelete = () => {
+    if (!deleteId) return;
+    setDeleting(true);
+    Effect.runPromise(apiClient.delete(`/api/v1/tech-stacks/${deleteId}`))
+      .then(() => { setDeleteId(null); fetchStacks(); toast({ title: "Deleted", description: "Stack deleted", variant: "success" }); })
+      .catch((err) => toast({ title: "Error", description: err.message, variant: "destructive" }))
+      .finally(() => setDeleting(false));
   };
 
   return (
@@ -87,7 +91,7 @@ export function AdminStacksPage() {
                   <Button
                     variant="destructive"
                     size="icon-sm"
-                    onClick={() => handleDelete(stack.id)}
+                    onClick={() => setDeleteId(stack.id)}
                     aria-label="Delete stack"
                   >
                     <Trash2 size={14} />
@@ -102,6 +106,16 @@ export function AdminStacksPage() {
       {formOpen && (
         <TechStackDrawer open={formOpen} onOpenChange={setFormOpen} editingStack={editingStack} onSuccess={fetchStacks} stacksCount={stacks.length} />
       )}
+
+      <ConfirmDialog
+        open={deleteId !== null}
+        onOpenChange={(open) => { if (!open && !deleting) setDeleteId(null); }}
+        title="Delete stack?"
+        description="This will permanently delete the stack. This action cannot be undone."
+        confirmLabel="Delete"
+        loading={deleting}
+        onConfirm={handleDelete}
+      />
     </div>
   );
 }

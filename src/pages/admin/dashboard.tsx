@@ -69,6 +69,7 @@ export function AdminDashboardPage() {
   else if (currentPath.includes("articles")) pageTitle = "Articles";
   else if (currentPath.includes("achievements")) pageTitle = "Achievements";
   else if (currentPath.includes("work")) pageTitle = "Work Experience";
+  else if (currentPath.includes("storage")) pageTitle = "Storage";
   else if (currentPath.includes("profile")) pageTitle = "Profile Settings";
 
   return (

@@ -1,5 +1,5 @@
 
-import { useParams } from "react-router-dom"
+import { useNavigate, useParams } from "react-router-dom"
 import Markdown from "react-markdown"
 import remarkGfm from "remark-gfm"
 import { Effect } from "effect"
@@ -12,6 +12,26 @@ import type { Project } from "@/entities/project/model/types"
 interface ProjectDetailData {
   project: Project | null
   markdown: string
+}
+
+function BackButton() {
+  const navigate = useNavigate()
+
+  return (
+    <button
+      type="button"
+      onClick={() => {
+        if ((window.history.state as { idx?: number } | null)?.idx) {
+          navigate(-1)
+        } else {
+          navigate("/")
+        }
+      }}
+      className="inline-block text-sm text-gray-400 hover:text-[#111111] underline underline-offset-4 transition-colors cursor-pointer"
+    >
+      &larr; Back
+    </button>
+  )
 }
 
 export function ProjectDetailPage() {
@@ -48,7 +68,7 @@ export function ProjectDetailPage() {
 
   if (loading) {
     return (
-      <main className="grid-pattern min-h-screen px-4 py-20 md:px-24 bg-white">
+      <main className="min-h-screen px-4 py-20 md:px-24 bg-white">
         <div className="mx-auto max-w-4xl space-y-8" aria-hidden>
           {/* title */}
           <Skeleton className="h-12 w-2/3" />
@@ -83,8 +103,9 @@ export function ProjectDetailPage() {
 
     if (notFound) {
       return (
-        <main className="grid-pattern min-h-screen px-4 py-20 md:px-24">
-          <div className="mx-auto max-w-4xl text-center">
+        <main className="min-h-screen px-4 py-20 md:px-24">
+          <div className="mx-auto max-w-4xl space-y-8 text-center">
+            <BackButton />
             <h1 className="text-3xl font-bold">
               <FoldText text="Project not found" />
             </h1>
@@ -94,8 +115,9 @@ export function ProjectDetailPage() {
     }
 
     return (
-      <main className="grid-pattern min-h-screen px-4 py-20 md:px-24 bg-white">
+      <main className="min-h-screen px-4 py-20 md:px-24 bg-white">
         <div className="mx-auto max-w-4xl text-center space-y-4">
+          <BackButton />
           <p className="text-sm text-gray-400">
             <FoldText text="Failed to load the project." splitBy="word" duration={0.2} />
           </p>
@@ -113,8 +135,9 @@ export function ProjectDetailPage() {
 
   if (!project) {
     return (
-      <main className="grid-pattern min-h-screen px-4 py-20 md:px-24">
-        <div className="mx-auto max-w-4xl text-center">
+      <main className="min-h-screen px-4 py-20 md:px-24">
+        <div className="mx-auto max-w-4xl space-y-8 text-center">
+          <BackButton />
           <h1 className="text-3xl font-bold">
             <FoldText text="Project not found" />
           </h1>
@@ -124,8 +147,9 @@ export function ProjectDetailPage() {
   }
 
   return (
-    <main className="grid-pattern min-h-screen px-4 py-20 md:px-24 bg-white">
+    <main className="min-h-screen px-4 py-20 md:px-24 bg-white">
       <div className="mx-auto max-w-4xl space-y-8 animate-content-enter">
+        <BackButton />
         <h1 className="font-serif text-[3rem] leading-[1.1] tracking-[-0.02em] font-medium text-gray-900">
           <FoldText text={project.title} />
         </h1>

@@ -6,6 +6,7 @@ import {
   Award,
   Briefcase,
   User,
+  HardDrive,
   LogOut
 } from "lucide-react";
 import {
@@ -51,6 +52,7 @@ export function AdminSidebar({ profile, onLogout }: AdminSidebarProps) {
   const secondaryNavItems = [
     { path: "/admin/achievements", label: "Achievements", icon: Award },
     { path: "/admin/work", label: "Work Experience", icon: Briefcase },
+    { path: "/admin/storage", label: "Storage", icon: HardDrive },
     { path: "/admin/profile", label: "Profile Settings", icon: User },
   ];
 

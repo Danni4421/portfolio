@@ -1,13 +1,7 @@
 import { useOutletContext } from "react-router-dom";
 import { Upload, Loader2, CheckCircle } from "lucide-react";
 import { Button } from "@/shared/ui/button";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-  CardDescription,
-} from "@/shared/ui/card";
+import { Card, CardContent } from "@/shared/ui/card";
 import { useProfileForm } from "@/features/profile/hooks/use-profile-form";
 import { FormTextField, FormTextAreaField } from "@/shared/ui/form";
 

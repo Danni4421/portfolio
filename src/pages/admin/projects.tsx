@@ -7,6 +7,7 @@ import { Badge } from "@/shared/ui/badge";
 import { apiClient } from "@/shared/api/client";
 import { Effect } from "effect";
 import { useToast } from "@/shared/ui/toast";
+import { ConfirmDialog } from "@/shared/ui/confirm-dialog";
 import { ProjectDrawer } from "@/features/project/components/project-drawer";
 import { ProjectStoriesDrawer } from "@/features/project/components/project-stories-drawer";
 import { ProjectTechStacksDrawer } from "@/features/project/components/project-tech-stacks-drawer";
@@ -47,6 +48,8 @@ export function AdminProjectsPage() {
   const [techStacksOpen, setTechStacksOpen] = useState(false);
   const [galleryOpen, setGalleryOpen] = useState(false);
   const [resourcesOpen, setResourcesOpen] = useState(false);
+  const [deleteProject, setDeleteProject] = useState<Project | null>(null);
+  const [deleting, setDeleting] = useState(false);
 
   const fetchProjects = () => {
     setLoading(true);
@@ -97,16 +100,19 @@ export function AdminProjectsPage() {
     setResourcesOpen(true);
   };
 
-  const handleDelete = (id: string) => {
-    const hardDelete = window.confirm("Delete project permanently? Cancel for soft delete.")
-    Effect.runPromise(apiClient.delete(`/api/v1/projects/${id}`, `?soft=${!hardDelete}`))
+  const handleDelete = (soft: boolean) => {
+    if (!deleteProject) return;
+    setDeleting(true);
+    Effect.runPromise(apiClient.delete(`/api/v1/projects/${deleteProject.id}`, `?soft=${soft}`))
       .then(() => {
+        setDeleteProject(null);
         fetchProjects();
         toast({ title: "Deleted", description: "Project deleted successfully", variant: "success" });
       })
       .catch((err) => {
         toast({ title: "Deletion Failed", description: err.message || "Deletion failed", variant: "destructive" });
-      });
+      })
+      .finally(() => setDeleting(false));
   };
 
   return (
@@ -224,7 +230,7 @@ export function AdminProjectsPage() {
                       <Button
                         variant="destructive"
                         size="icon-sm"
-                        onClick={() => handleDelete(proj.id)}
+                        onClick={() => setDeleteProject(proj)}
                         aria-label="Delete project"
                       >
                         <Trash2 size={14} />
@@ -276,6 +282,17 @@ export function AdminProjectsPage() {
         project={editingProject}
         setProject={setEditingProject}
         onSuccess={fetchProjects}
+      />
+
+      <ConfirmDialog
+        open={deleteProject !== null}
+        onOpenChange={(open) => { if (!open && !deleting) setDeleteProject(null); }}
+        title="Delete project?"
+        description="Soft delete hides the project from listings but keeps the record. Delete permanently removes it and all related data. This action cannot be undone."
+        confirmLabel="Delete permanently"
+        loading={deleting}
+        secondaryAction={{ label: "Soft delete", onAction: () => handleDelete(true) }}
+        onConfirm={() => handleDelete(false)}
       />
     </div>
   );

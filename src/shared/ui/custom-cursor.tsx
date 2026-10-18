@@ -13,6 +13,8 @@ function isMobileOS(): boolean {
   return /Macintosh/.test(ua) && navigator.maxTouchPoints > 1;
 }
 
+const HOVER_SELECTOR = "a, button, [data-hover]";
+
 export function CustomCursor() {
   // OS never changes at runtime — detect once
   const [isMobile] = useState(isMobileOS);
@@ -40,6 +42,31 @@ export function CustomCursor() {
     };
     window.addEventListener("mousemove", onMouseMove);
 
+    let hovering = false;
+    const setHover = (on: boolean) => {
+      if (on === hovering) return;
+      hovering = on;
+      gsap.to(circle, {
+        scale: on ? 2.5 : 1,
+        opacity: on ? 0.15 : 1,
+        duration: 0.3,
+        ease: "power2.out",
+      });
+    };
+
+    const isInteractive = (node: EventTarget | null): boolean =>
+      node instanceof Element && node.closest(HOVER_SELECTOR) !== null;
+
+    // Delegated listeners — survive SPA navigations and late-rendered content
+    const onPointerOver = (e: PointerEvent) => {
+      if (isInteractive(e.target)) setHover(true);
+    };
+    const onPointerOut = (e: PointerEvent) => {
+      if (!isInteractive(e.relatedTarget)) setHover(false);
+    };
+    document.addEventListener("pointerover", onPointerOver);
+    document.addEventListener("pointerout", onPointerOut);
+
     const tickerId = gsap.ticker.add(() => {
       const dt = 1 - Math.pow(0.88, gsap.ticker.deltaRatio());
       pos.x += (mouse.x - pos.x) * dt;
@@ -48,30 +75,19 @@ export function CustomCursor() {
       setCircleY(pos.y - 20);
       setDotX(mouse.x - 10);
       setDotY(mouse.y - 10);
-    });
 
-    const hoverTargets = document.querySelectorAll("a, button, [data-hover]");
-    const enterHandlers = new Map<Element, () => void>();
-    const leaveHandlers = new Map<Element, () => void>();
-
-    hoverTargets.forEach((el) => {
-      const enter = () =>
-        gsap.to(circle, { scale: 2.5, opacity: 0.15, duration: 0.3, ease: "power2.out" });
-      const leave = () =>
-        gsap.to(circle, { scale: 1, opacity: 1, duration: 0.3, ease: "power2.out" });
-      el.addEventListener("mouseenter", enter);
-      el.addEventListener("mouseleave", leave);
-      enterHandlers.set(el, enter);
-      leaveHandlers.set(el, leave);
+      // Safety net: if the hovered element unmounted (e.g. route change
+      // while focused on a link), no pointerout fires — reset from here.
+      if (hovering && !isInteractive(document.elementFromPoint(mouse.x, mouse.y))) {
+        setHover(false);
+      }
     });
 
     return () => {
       window.removeEventListener("mousemove", onMouseMove);
+      document.removeEventListener("pointerover", onPointerOver);
+      document.removeEventListener("pointerout", onPointerOut);
       gsap.ticker.remove(tickerId);
-      hoverTargets.forEach((el) => {
-        el.removeEventListener("mouseenter", enterHandlers.get(el)!);
-        el.removeEventListener("mouseleave", leaveHandlers.get(el)!);
-      });
     };
   }, [isMobile]);
 

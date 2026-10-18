@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-import { CustomCursor } from "@/shared/ui/custom-cursor";
 import { LoadingAnimation } from "@/shared/ui/loading-animation";
 import { Header } from "@/widgets/header";
 import { Hero } from "@/widgets/hero";
@@ -37,7 +36,6 @@ export function HomePage() {
           loading ? "opacity-0" : "opacity-100"
         }`}
       >
-        <CustomCursor />
         <Header />
         <main id="main-content">
           <Hero />

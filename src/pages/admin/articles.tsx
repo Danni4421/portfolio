@@ -6,6 +6,7 @@ import { Skeleton } from "@/shared/ui/skeleton";
 import { apiClient } from "@/shared/api/client";
 import { Effect } from "effect";
 import { useToast } from "@/shared/ui/toast";
+import { ConfirmDialog } from "@/shared/ui/confirm-dialog";
 import { ArticleDrawer } from "@/features/article/components/article-drawer";
 
 export function AdminArticlesPage() {
@@ -14,6 +15,8 @@ export function AdminArticlesPage() {
   const [loading, setLoading] = useState(true);
   const [formOpen, setFormOpen] = useState(false);
   const [editingArticle, setEditingArticle] = useState<any | null>(null);
+  const [deleteId, setDeleteId] = useState<string | null>(null);
+  const [deleting, setDeleting] = useState(false);
 
   const fetchArticles = () => {
     setLoading(true);
@@ -28,12 +31,13 @@ export function AdminArticlesPage() {
   const handleOpenCreate = () => { setEditingArticle(null); setFormOpen(true); };
   const handleOpenEdit = (article: any) => { setEditingArticle(article); setFormOpen(true); };
 
-  const handleDelete = (id: string) => {
-    if (window.confirm("Delete article permanently?")) {
-      Effect.runPromise(apiClient.delete(`/api/v1/articles/${id}`))
-        .then(() => { fetchArticles(); toast({ title: "Deleted", description: "Article deleted", variant: "success" }); })
-        .catch((err) => toast({ title: "Error", description: err.message, variant: "destructive" }));
-    }
+  const handleDelete = () => {
+    if (!deleteId) return;
+    setDeleting(true);
+    Effect.runPromise(apiClient.delete(`/api/v1/articles/${deleteId}`))
+      .then(() => { setDeleteId(null); fetchArticles(); toast({ title: "Deleted", description: "Article deleted", variant: "success" }); })
+      .catch((err) => toast({ title: "Error", description: err.message, variant: "destructive" }))
+      .finally(() => setDeleting(false));
   };
 
   return (
@@ -75,7 +79,7 @@ export function AdminArticlesPage() {
                   <Button
                     variant="destructive"
                     size="icon-sm"
-                    onClick={() => handleDelete(art.id)}
+                    onClick={() => setDeleteId(art.id)}
                     aria-label="Delete article"
                   >
                     <Trash2 size={14} />
@@ -87,6 +91,16 @@ export function AdminArticlesPage() {
         </div>
       )}
       {formOpen && <ArticleDrawer open={formOpen} onOpenChange={setFormOpen} editingArticle={editingArticle} onSuccess={fetchArticles} />}
+
+      <ConfirmDialog
+        open={deleteId !== null}
+        onOpenChange={(open) => { if (!open && !deleting) setDeleteId(null); }}
+        title="Delete article?"
+        description="This will permanently delete the article. This action cannot be undone."
+        confirmLabel="Delete"
+        loading={deleting}
+        onConfirm={handleDelete}
+      />
     </div>
   );
 }

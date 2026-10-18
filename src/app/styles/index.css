@@ -117,6 +117,91 @@ a {
     text-decoration: inherit;
 }
 
+/* Grid pattern background — used by project detail & about intro.
+   Image is injected via --grid-a / --grid-b custom properties (see src/lib/grid-pattern.ts)
+   and crossfaded between the two pseudo-layers every few seconds. */
+.grid-pattern {
+    position: relative;
+    z-index: 0;
+    width: 100%;
+    height: 100%;
+}
+
+.grid-pattern::before,
+.grid-pattern::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    background-size: cover;
+    background-position: center center;
+    background-repeat: repeat;
+    transition: opacity 0.8s ease;
+}
+
+.grid-pattern::before {
+    background-image: var(--grid-a, none);
+}
+
+.grid-pattern::after {
+    background-image: var(--grid-b, none);
+    opacity: 0;
+}
+
+.grid-pattern.is-grid-crossfading::before {
+    opacity: 0;
+}
+
+.grid-pattern.is-grid-crossfading::after {
+    opacity: 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .grid-pattern::before,
+    .grid-pattern::after {
+        transition: none;
+    }
+}
+
+/* Soft blur transition at a section edge — blurs the grid pattern behind it
+   and fades the effect out toward the middle of the section. Height matches
+   the section padding so it never overlaps content. */
+.blur-fade {
+    position: absolute;
+    left: 0;
+    right: 0;
+    pointer-events: none;
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    -webkit-mask-image: linear-gradient(to bottom, black, transparent);
+    mask-image: linear-gradient(to bottom, black, transparent);
+}
+
+.blur-fade-top {
+    top: 0;
+    height: 2.5rem;
+    background: linear-gradient(to bottom, rgb(255 255 255 / 0.9), transparent);
+}
+
+.blur-fade-bottom {
+    bottom: 0;
+    height: 4rem;
+    background: linear-gradient(to top, rgb(255 255 255 / 0.9), transparent);
+    -webkit-mask-image: linear-gradient(to top, black, transparent);
+    mask-image: linear-gradient(to top, black, transparent);
+}
+
+@media (min-width: 768px) {
+    .blur-fade-top {
+        height: 4rem;
+    }
+
+    .blur-fade-bottom {
+        height: 6rem;
+    }
+}
+
 /* Marquee animation */
 @keyframes marquee {
     0%   { transform: translateX(0); }

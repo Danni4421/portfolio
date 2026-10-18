@@ -1,21 +1,29 @@
-// ponytail: separate work experience descriptions manager dialog component
+// ponytail: separate work experience descriptions manager drawer component
 import * as React from "react";
 import { useState } from "react";
-import { Loader2, Trash2, BookOpen } from "lucide-react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
+import { Loader2, Trash2 } from "lucide-react";
 import { Button } from "@/shared/ui/button";
-import { Input } from "@/shared/ui/input";
-import { Label } from "@/shared/ui/label";
+import { FormTextField } from "@/shared/ui/form";
 import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogFooter,
-} from "@/shared/ui/dialog";
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetFooter,
+} from "@/shared/ui/sheet";
 import { apiClient } from "@/shared/api/client";
 import { Effect } from "effect";
 import { useToast } from "@/shared/ui/toast";
 import type { WorkExperience, WorkExperienceJobDesc } from "@/features/work-experience/types";
+
+const descriptionSchema = z.object({
+  description: z.string().min(1, "Job description is required"),
+});
+
+type DescriptionFormValues = z.infer<typeof descriptionSchema>;
 
 interface WorkExperienceDescriptionsDrawerProps {
   open: boolean;
@@ -33,20 +41,20 @@ export function WorkExperienceDescriptionsDrawer({
   onSuccess,
 }: WorkExperienceDescriptionsDrawerProps) {
   const { toast } = useToast();
-  const [newDescBullet, setNewDescBullet] = useState("");
   const [descLoading, setNewDescLoading] = useState(false);
+  const form = useForm<DescriptionFormValues>({
+    resolver: zodResolver(descriptionSchema),
+    defaultValues: { description: "" },
+  });
 
   if (!experience) return null;
 
-  const handleAddDescBullet = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!newDescBullet) return;
-
+  const handleAddDescBullet = form.handleSubmit((values) => {
     setNewDescLoading(true);
     Effect.runPromise(
       apiClient.post<{ success: boolean; data: WorkExperienceJobDesc }>("/api/v1/work-experience-job-descriptions", {
         work_experience_id: experience.id,
-        description: newDescBullet,
+        description: values.description,
       })
     )
       .then((res) => {
@@ -55,7 +63,7 @@ export function WorkExperienceDescriptionsDrawer({
           job_descriptions: [...(experience.job_descriptions || []), res.data],
         };
         setExperience(updated);
-        setNewDescBullet("");
+        form.reset({ description: "" });
         onSuccess();
         onOpenChange(false);
         toast({ title: "Success", description: "Job description added successfully", variant: "success" });
@@ -66,7 +74,7 @@ export function WorkExperienceDescriptionsDrawer({
       .finally(() => {
         setNewDescLoading(false);
       });
-  };
+  });
 
   const handleDeleteDescBullet = (descId: string) => {
     Effect.runPromise(apiClient.delete(`/api/v1/work-experience-job-descriptions/${descId}`, "?soft=false"))
@@ -85,66 +93,69 @@ export function WorkExperienceDescriptionsDrawer({
   };
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-md">
-        <DialogHeader className="border-b border-neutral-200 pb-3">
-          <DialogTitle className="font-sans text-lg font-bold text-neutral-955 flex items-center gap-1.5">
-            <BookOpen size={18} className="text-[#ec7211]" /> Job Descriptions
-          </DialogTitle>
-          <p className="text-xs text-[#ec7211] font-semibold mt-0.5">Role: {experience.title}</p>
-        </DialogHeader>
+    <Sheet open={open} onOpenChange={onOpenChange}>
+      <SheetContent>
+        <SheetHeader>
+          <SheetTitle>Job Descriptions</SheetTitle>
+          <p className="text-lg text-muted-foreground font-medium mt-0.5">
+            {experience.title}
+          </p>
+        </SheetHeader>
 
-        <form onSubmit={handleAddDescBullet}>
-          <div className="space-y-4 p-6">
-            <div className="space-y-2">
-              <Label className="text-neutral-700 font-semibold text-xs uppercase tracking-wider block">Add Job Desc</Label>
-              <Input
-                type="text"
-                placeholder="e.g. Led core product rebuild..."
-                value={newDescBullet}
-                onChange={(e) => setNewDescBullet(e.target.value)}
-                className="bg-white border-neutral-300 focus:border-[#ec7211] text-neutral-900 rounded-lg text-sm w-full block h-9"
-                required
-              />
-            </div>
+        <form onSubmit={handleAddDescBullet} className="flex min-h-0 flex-1 flex-col">
+          <div className="min-h-0 flex-1 space-y-4 overflow-y-auto px-6 py-6">
+            <FormTextField
+              name="description"
+              label="Add Job Desc"
+              placeholder="e.g. Led core product rebuild..."
+              register={form.register}
+              error={form.formState.errors.description}
+              required
+            />
 
-            <div className="space-y-2">
-              <Label className="text-neutral-700 font-semibold text-xs uppercase tracking-wider block">Existing Job Descs</Label>
-              <div className="space-y-2 max-h-[220px] overflow-y-auto pr-1">
-                {experience.job_descriptions?.map((j) => (
-                  <div key={j.id} className="flex items-start justify-between gap-3 p-2.5 bg-neutral-50 border border-neutral-200 rounded-lg text-xs leading-normal">
-                    <span className="flex-1 text-neutral-750 font-sans">{j.description}</span>
-                    <button type="button" onClick={() => handleDeleteDescBullet(j.id)} className="text-red-550 hover:text-red-655 p-1 cursor-pointer flex-shrink-0">
-                      <Trash2 size={12} />
-                    </button>
-                  </div>
-                ))}
-                {(!experience.job_descriptions || experience.job_descriptions.length === 0) && (
-                  <p className="text-xs text-neutral-400 italic mt-2 text-center font-sans">No job descriptions added yet.</p>
-                )}
-              </div>
+            <div className="space-y-2 h-auto overflow-y-auto pr-1 mt-5">
+              {experience.job_descriptions?.map((j) => (
+                <div
+                  key={j.id}
+                  className="flex items-center justify-between gap-3 p-2.5 bg-muted/50 border border-border rounded-lg text-xs leading-normal"
+                >
+                  <span className="flex-1 text-foreground">{j.description}</span>
+                  <button
+                    type="button"
+                    onClick={() => handleDeleteDescBullet(j.id)}
+                    className="text-destructive hover:text-destructive p-1 cursor-pointer flex-shrink-0 self-start"
+                  >
+                    <Trash2 size={12} />
+                  </button>
+                </div>
+              ))}
+              {(!experience.job_descriptions || experience.job_descriptions.length === 0) && (
+                <p className="text-xs text-muted-foreground italic mt-2 text-center">
+                  No job descriptions added yet.
+                </p>
+              )}
             </div>
           </div>
 
-          <DialogFooter>
+          <SheetFooter className="flex flex-col!">
             <Button
               type="button"
+              variant="outline"
               onClick={() => onOpenChange(false)}
-              className="bg-neutral-100 hover:bg-neutral-200 text-neutral-700! font-semibold rounded-lg border border-neutral-300 cursor-pointer"
             >
               Cancel
             </Button>
             <Button
               type="submit"
-              className="bg-[#ec7211] hover:bg-[#d65f0e] text-white font-bold rounded-lg cursor-pointer flex items-center gap-1.5"
+              className="gap-1.5"
               disabled={descLoading}
             >
               {descLoading && <Loader2 size={12} className="animate-spin" />}
               Add Job Desc
             </Button>
-          </DialogFooter>
+          </SheetFooter>
         </form>
-      </DialogContent>
-    </Dialog>
+      </SheetContent>
+    </Sheet>
   );
 }

@@ -54,20 +54,16 @@ export function Hero() {
         {/* Left column */}
         <div className="flex flex-col justify-end py-4 md:py-16">
           <h1 className="text-2xl md:text-4xl leading-none tracking-[-2.5px]">
-            <AnimatedText text="Frontend" className="text-[#111111]" />
-            <AnimatedText text="developer" className="text-[#b2b2b2]" />
+            <AnimatedText text="Software" className="text-[#111111]" />
+            <AnimatedText text="engineer" className="text-[#111111]" />
             <AnimatedText text="crafting" className="text-[#b2b2b2]" />
             <AnimatedText text="digital" className="text-[#b2b2b2]" />
             <AnimatedText text="experiences" className="text-[#b2b2b2]" />
-            <AnimatedText text="from" className="text-[#b2b2b2]" />
+            <AnimatedText text="through" className="text-[#b2b2b2]" />
             <AnimatedText text="code" className="text-[#111111]" />
-            <AnimatedText text="to" className="text-[#111111]" />
-            <AnimatedText text="UI" className="text-[#111111]" />
-            <AnimatedText text="systems." className="text-[#b2b2b2]" />
           </h1>
           <p className="text-md leading-relaxed text-gray-400 mt-6">
-            I build fast, type-safe web applications. From code to interface,
-            built with care.
+            I turn ideas into reliable software, crafting everything from system architecture to user interfaces.
           </p>
         </div>
 

@@ -7,34 +7,34 @@ const SERVICES = [
   {
     id: "001",
     animation: <FrontendEngineeringIcon />,
-    name: "Frontend Engineering",
-    subtitle: "Code that performs.",
+    name: "Web Development",
+    subtitle: "Crafting modern web experiences",
     description:
-      "I turn designs into fast, accessible interfaces, cut friction, and ship products people enjoy using.",
+      "Create responsive, accessible interfaces that turn ideas and designs into intuitive, user-friendly websites",
   },
   {
     id: "002",
     animation: <UiImplementationIcon />,
-    name: "UI Implementation",
-    subtitle: "Pixel-perfect builds.",
+    name: "Mobile Development",
+    subtitle: "Experiences that go wherever you go",
     description:
-      "Interfaces that match the design spec, with clean component structure you can maintain.",
+      "Build mobile apps focused on seamless interactions, device capabilities, and reliable experiences on the go",
   },
   {
     id: "003",
     animation: <PerformanceIcon />,
-    name: "Performance",
-    subtitle: "Speed as a feature.",
+    name: "AI Engineering",
+    subtitle: "Making intelligence practical",
     description:
-      "Core Web Vitals, lazy loading, bundle splitting. Your product loads fast on any device.",
+      "Develop AI-powered features that transform models, data, and algorithms into useful real-world solutions",
   },
   {
     id: "004",
     animation: <TypeScriptSystemsIcon />,
-    name: "TypeScript & Systems",
-    subtitle: "Type-safe by design.",
+    name: "Full-Stack Development",
+    subtitle: "Connecting every layer",
     description:
-      "Solid codebases with strict typing, Effect-TS patterns, and clear domain boundaries.",
+      "Design and build end-to-end systems, integrating frontend interfaces, backend services, databases, and APIs into cohesive products",
   },
 ]
 

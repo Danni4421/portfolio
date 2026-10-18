@@ -7,6 +7,7 @@ import { Skeleton } from "@/shared/ui/skeleton";
 import FoldText from "@/shared/ui/fold-text";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { ArrowRight } from "lucide-react";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -20,7 +21,9 @@ const formatDate = (dateStr?: string | null) => {
 export function WorkExperienceList() {
   const containerRef = useRef<HTMLDivElement>(null);
 
-  const { data, isLoading, isError } = useQuery<{ experiences: WorkExperience[] }>({
+  const { data, isLoading, isError } = useQuery<{
+    experiences: WorkExperience[];
+  }>({
     queryKey: ["workExperiences"],
     queryFn: () => Effect.runPromise(getWorkExperiences()),
   });
@@ -108,7 +111,10 @@ export function WorkExperienceList() {
             </div>
           </div>
           <p className="text-sm text-gray-400">
-            <FoldText text="There are no related work experiences for now." splitBy="word" />
+            <FoldText
+              text="There are no related work experiences for now."
+              splitBy="word"
+            />
           </p>
         </div>
       </section>
@@ -162,14 +168,14 @@ export function WorkExperienceList() {
                     <span className="text-sm font-medium text-[#111111]">
                       {exp.title}
                     </span>
-                    <span className="text-xs text-gray-400 font-mono">
+                    <span className="text-xs text-neutral-400">
                       {formatDate(exp.start_date)} – {formatDate(exp.end_date)}
                     </span>
                   </div>
                 </div>
 
                 <div className="flex-1 min-w-0 sm:pl-4">
-                  <p className="text-sm text-gray-500 leading-relaxed">
+                  <p className="text-sm text-neutral-400 leading-relaxed">
                     {exp.description}
                   </p>
 
@@ -192,9 +198,10 @@ export function WorkExperienceList() {
                       href={exp.redirect_url}
                       target="_blank"
                       rel="noreferrer"
-                      className="inline-block mt-3 text-xs underline underline-offset-4 text-gray-400 hover:text-[#111111] transition-colors"
+                      className="flex justify-center items-center w-fit gap-1 mt-3 text-xs rounded-full px-4 py-2 border border-neutral-200 hover:bg-neutral-100 duration-300 underline underline-offset-4 text-neutral-400 hover:text-[#111111] transition-colors"
                     >
-                      Visit company →
+                      <span>Visit company</span>
+                      <ArrowRight size={12} />
                     </a>
                   )}
                 </div>

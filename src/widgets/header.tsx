@@ -1,11 +1,12 @@
 import { useState, useEffect, useRef } from "react";
 import { gsap } from "gsap";
+import { GoTo } from "@/shared/ui/go-to";
 
 const navItems = [
-  { name: "Home", href: "/" },
-  { name: "About", href: "#about" },
-  { name: "Work", href: "#projects" },
-  { name: "Contact", href: "#contact" },
+  { name: "Home", to: "/" },
+  { name: "About", to: "about" },
+  { name: "Work", to: "projects" },
+  { name: "Contact", to: "contact" },
 ];
 
 export function Header() {
@@ -37,19 +38,19 @@ export function Header() {
           <div className="flex flex-col">
             <p className="text-md font-medium leading-none">Aji Hamdani.</p>
             <p className="block text-sm text-gray-400 mt-1">
-              Full Stack, now as a Frontend Engineer
+              Full-Stack Developer, now as a Frontend Engineer
             </p>
           </div>
           <div className="md:justify-end flex">
             <nav className="flex gap-4 md:gap-5 shrink-0">
               {navItems.map((item) => (
-                <a
+                <GoTo
                   key={item.name}
                   className="text-sm text-[#111111] hover:text-gray-400 transition-colors"
-                  href={item.href}
+                  to={item.to}
                 >
                   {item.name}
-                </a>
+                </GoTo>
               ))}
             </nav>
           </div>
@@ -66,13 +67,13 @@ export function Header() {
           <p className="text-md font-medium">Aji Hamdani.</p>
           <nav className="flex gap-4 md:gap-5 shrink-0">
             {navItems.map((item) => (
-              <a
+              <GoTo
                 key={item.name}
                 className="text-sm text-gray-400 hover:text-[#111111] transition-colors"
-                href={item.href}
+                to={item.to}
               >
                 {item.name}
-              </a>
+              </GoTo>
             ))}
           </nav>
         </div>

@@ -8,6 +8,7 @@ import { Skeleton } from "@/shared/ui/skeleton";
 import { apiClient } from "@/shared/api/client";
 import { Effect } from "effect";
 import { useToast } from "@/shared/ui/toast";
+import { ConfirmDialog } from "@/shared/ui/confirm-dialog";
 import { AchievementDrawer } from "@/features/achievement/components/achievement-drawer";
 import { AchievementResourcesDrawer } from "@/features/achievement/components/achievement-resources-drawer";
 import type { Achievement } from "@/entities/achievement/model/types";
@@ -19,6 +20,8 @@ export function AdminAchievementsPage() {
   const [formOpen, setFormOpen] = useState(false);
   const [resourcesOpen, setResourcesOpen] = useState(false);
   const [editingAchievement, setEditingAchievement] = useState<Achievement | null>(null);
+  const [deleteId, setDeleteId] = useState<string | null>(null);
+  const [deleting, setDeleting] = useState(false);
 
   const fetchAchievements = () => {
     setLoading(true);
@@ -36,12 +39,13 @@ export function AdminAchievementsPage() {
   const handleOpenEdit = (achievement: Achievement) => { setEditingAchievement(achievement); setFormOpen(true); };
   const handleOpenResources = (achievement: Achievement) => { setEditingAchievement(achievement); setResourcesOpen(true); };
 
-  const handleDelete = (id: string) => {
-    if (window.confirm("Delete achievement permanently?")) {
-      Effect.runPromise(apiClient.delete(`/api/v1/achievements/${id}`))
-        .then(() => { fetchAchievements(); toast({ title: "Deleted", description: "Achievement deleted", variant: "success" }); })
-        .catch((err) => toast({ title: "Error", description: err.message, variant: "destructive" }));
-    }
+  const handleDelete = () => {
+    if (!deleteId) return;
+    setDeleting(true);
+    Effect.runPromise(apiClient.delete(`/api/v1/achievements/${deleteId}`))
+      .then(() => { setDeleteId(null); fetchAchievements(); toast({ title: "Deleted", description: "Achievement deleted", variant: "success" }); })
+      .catch((err) => toast({ title: "Error", description: err.message, variant: "destructive" }))
+      .finally(() => setDeleting(false));
   };
 
   return (
@@ -95,7 +99,7 @@ export function AdminAchievementsPage() {
                   <Button
                     variant="destructive"
                     size="icon-sm"
-                    onClick={() => handleDelete(ach.id)}
+                    onClick={() => setDeleteId(ach.id)}
                     aria-label="Delete achievement"
                   >
                     <Trash2 size={14} />
@@ -122,6 +126,16 @@ export function AdminAchievementsPage() {
         achievement={editingAchievement}
         setAchievement={setEditingAchievement}
         onSuccess={fetchAchievements}
+      />
+
+      <ConfirmDialog
+        open={deleteId !== null}
+        onOpenChange={(open) => { if (!open && !deleting) setDeleteId(null); }}
+        title="Delete achievement?"
+        description="This will permanently delete the achievement. This action cannot be undone."
+        confirmLabel="Delete"
+        loading={deleting}
+        onConfirm={handleDelete}
       />
     </div>
   );

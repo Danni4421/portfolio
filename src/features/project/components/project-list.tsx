@@ -52,7 +52,7 @@ export function ProjectList() {
 
   if (isLoading) {
     return (
-      <section className="px-4 py-16 md:py-24 border-t border-gray-100">
+      <section id="projects" className="px-4 py-16 md:py-24 border-t border-gray-100">
         <div className="max-w-5xl mx-auto">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-x-1 gap-y-4 mb-6 md:mb-8">
             <p className="md:sticky md:self-start md:top-4 text-lg tracking-[-0.64px] text-black">
@@ -80,7 +80,7 @@ export function ProjectList() {
 
   if (isError || !projects || projects.length === 0) {
     return (
-      <section className="px-4 py-16 md:py-24 border-t border-gray-100">
+      <section id="projects" className="px-4 py-16 md:py-24 border-t border-gray-100">
         <div className="max-w-5xl mx-auto">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-x-1 gap-y-4 mb-6 md:mb-8">
             <p className="md:sticky md:self-start md:top-4 text-lg tracking-[-0.64px] text-black">
@@ -101,7 +101,7 @@ export function ProjectList() {
   }
 
   return (
-    <section className="px-4 py-16 md:py-24 border-t border-gray-100">
+    <section id="projects" className="px-4 py-16 md:py-24 border-t border-gray-100">
       <div className="max-w-5xl mx-auto">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-x-1 gap-y-4 mb-6 md:mb-8">
           <p className="md:sticky md:self-start md:top-4 text-lg tracking-[-0.64px] text-black">
