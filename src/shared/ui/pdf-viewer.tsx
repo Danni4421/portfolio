@@ -1,16 +1,12 @@
 import { useEffect, useRef, useState } from "react";
-// Legacy build includes polyfills (e.g. Promise.try) so the viewer works on
-// older browsers targeted by Vite's default build target.
-import * as pdfjs from "pdfjs-dist/legacy/build/pdf.mjs";
 import type {
+  PDFDocumentLoadingTask,
   PDFDocumentProxy,
   RenderTask,
 } from "pdfjs-dist/legacy/build/pdf.mjs";
-import workerSrc from "pdfjs-dist/legacy/build/pdf.worker.min.mjs?url";
 
+import { loadPdfjs } from "@/shared/lib/pdfjs";
 import { cn } from "@/shared/lib/utils";
-
-pdfjs.GlobalWorkerOptions.workerSrc = workerSrc;
 
 /** Extra distance (px) before a page scrolls into view that triggers its render. */
 const RENDER_MARGIN = "400px 0px";
@@ -34,13 +30,20 @@ export function PdfViewer({ src, className }: PdfViewerProps) {
   }>({ src, status: "loading", doc: null });
   const [width, setWidth] = useState(0);
 
+  // Always starts the document load when the viewer mounts, whether or not
+  // the library was preloaded earlier.
   useEffect(() => {
     let cancelled = false;
-    const task = pdfjs.getDocument({ url: src });
+    let task: PDFDocumentLoadingTask | undefined;
 
-    task.promise
+    loadPdfjs()
+      .then((pdfjs) => {
+        if (cancelled) return null;
+        task = pdfjs.getDocument({ url: src });
+        return task.promise;
+      })
       .then((pdf) => {
-        if (cancelled) return;
+        if (cancelled || !pdf) return;
         setState({ src, status: "ready", doc: pdf });
       })
       .catch(() => {
@@ -49,7 +52,7 @@ export function PdfViewer({ src, className }: PdfViewerProps) {
 
     return () => {
       cancelled = true;
-      void task.destroy();
+      void task?.destroy();
     };
   }, [src]);
 
@@ -74,15 +77,12 @@ export function PdfViewer({ src, className }: PdfViewerProps) {
   return (
     <div
       ref={containerRef}
-      className={cn(
-        "relative h-[55vh] overflow-y-auto border border-neutral-200 bg-neutral-50",
-        className,
-      )}
+      className={cn("relative h-[55vh] overflow-y-auto bg-white", className)}
     >
       {status === "loading" && (
-        <div className="flex flex-col items-center gap-4 p-4">
-          <div className="w-full max-w-[420px] aspect-[1/1.414] animate-pulse rounded-sm bg-neutral-200/70" />
-          <div className="w-full max-w-[420px] aspect-[1/1.414] animate-pulse rounded-sm bg-neutral-200/40" />
+        <div className="flex flex-col">
+          <div className="w-full aspect-[1/1.414] animate-pulse bg-neutral-100" />
+          <div className="w-full aspect-[1/1.414] animate-pulse bg-neutral-50" />
         </div>
       )}
 
@@ -93,14 +93,9 @@ export function PdfViewer({ src, className }: PdfViewerProps) {
       )}
 
       {status === "ready" && doc && width > 0 && (
-        <div className="flex flex-col items-center gap-4 p-4">
+        <div className="flex flex-col">
           {Array.from({ length: doc.numPages }, (_, index) => (
-            <PdfPage
-              key={index + 1}
-              doc={doc}
-              pageNumber={index + 1}
-              width={width - 32 /* p-4 on both sides */}
-            />
+            <PdfPage key={index + 1} doc={doc} pageNumber={index + 1} width={width} />
           ))}
         </div>
       )}
@@ -201,7 +196,7 @@ function PdfPage({ doc, pageNumber, width }: PdfPageProps) {
   return (
     <div
       ref={holderRef}
-      className="relative w-full max-w-[420px] shadow-sm"
+      className="relative w-full"
       style={aspectRatio ? { aspectRatio, width } : { width }}
     >
       {!rendered && (

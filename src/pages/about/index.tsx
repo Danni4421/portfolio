@@ -17,7 +17,8 @@ import {
 } from "@/shared/ui/dialog";
 import FoldText from "@/shared/ui/fold-text";
 
-// PDF.js is heavy; only load it when the CV preview dialog opens.
+// The viewer module — and, inside it, PDF.js itself via dynamic import — is
+// kept out of the main bundle and only loaded once the CV preview is used.
 const PdfViewer = lazy(() => import("@/shared/ui/pdf-viewer"));
 
 const HIGHLIGHTS = [
@@ -53,6 +54,25 @@ const STORY = [
 // can be fetched and rendered with PDF.js without CORS issues.
 const CV_HREF = "/api/v1/storage/raw/8021e426-7271-4b17-8f9d-7d763c5fabf1";
 
+let cvPreviewWarmed = false;
+
+/**
+ * At the first sign of intent (hover/focus of a "Download CV" trigger),
+ * start downloading the PDF.js chunk and the CV file so the preview is ready
+ * by the time the dialog opens. Both stay out of the main JS bundle; a failed
+ * warm-up is non-fatal — opening the dialog always retries.
+ */
+function warmCvPreview() {
+  if (cvPreviewWarmed) return;
+  cvPreviewWarmed = true;
+  // Both stay out of the main bundle: this only kicks off the downloads.
+  void import("@/shared/lib/pdfjs")
+    .then((module) => module.preloadPdfjs())
+    .catch(() => {});
+  void import("@/shared/ui/pdf-viewer").catch(() => {});
+  void fetch(CV_HREF).catch(() => {});
+}
+
 function CvDownloadLink({ className }: { className?: string }) {
   const triggerClass =
     className ??
@@ -60,7 +80,13 @@ function CvDownloadLink({ className }: { className?: string }) {
 
   return (
     <Dialog>
-      <DialogTrigger className={triggerClass}>Download CV ↓</DialogTrigger>
+      <DialogTrigger
+        className={triggerClass}
+        onPointerEnter={warmCvPreview}
+        onFocus={warmCvPreview}
+      >
+        Download CV ↓
+      </DialogTrigger>
       <DialogContent className="max-w-3xl w-[calc(100%-2rem)] p-0 gap-0 overflow-hidden">
         <DialogHeader className="px-6 pt-6 pb-4">
           <DialogTitle className="text-2xl font-medium">Curriculum Vitae</DialogTitle>
@@ -68,15 +94,13 @@ function CvDownloadLink({ className }: { className?: string }) {
             Preview of Aji Hamdani&apos;s curriculum vitae.
           </DialogDescription>
         </DialogHeader>
-        <div className="px-6">
-          <Suspense
-            fallback={
-              <div className="h-[55vh] animate-pulse rounded-sm border border-neutral-200 bg-neutral-100" />
-            }
-          >
-            <PdfViewer src={CV_HREF} />
-          </Suspense>
-        </div>
+        <Suspense
+          fallback={
+            <div className="h-[55vh] animate-pulse bg-neutral-100" />
+          }
+        >
+          <PdfViewer src={CV_HREF} />
+        </Suspense>
         <div className="flex justify-end gap-2 px-6 py-5">
           <a
             href={CV_HREF}
