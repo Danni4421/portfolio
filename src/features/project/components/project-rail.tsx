@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import type { Project } from "../types";
 import { ProjectSlug } from "../utils/slug";
 import { ProjectThumbnail } from "../utils/thumbnail";
+import { ProjectImage } from "./project-image";
 
 interface ProjectRailProps {
   projects: Array<Project>;
@@ -30,12 +31,12 @@ export function ProjectRail({
             style={{ transformOrigin: "center center" }}
             className="relative block h-(--work-card-h) w-full shrink-0 overflow-hidden rounded-[2.5rem] bg-neutral-100 will-change-transform"
           >
-            <img
+            <ProjectImage
               data-work-image
               src={ProjectThumbnail.get(project)}
               alt={project.title}
               loading={index < 2 ? "eager" : "lazy"}
-              className="absolute inset-0 h-full w-full object-cover will-change-transform"
+              // className="absolute inset-0 h-full w-full object-cover will-change-transform"
             />
           </Link>
         ))}
