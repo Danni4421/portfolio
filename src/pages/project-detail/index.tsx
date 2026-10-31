@@ -1,9 +1,13 @@
+import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import Markdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { Skeleton } from "@/shared/ui/skeleton";
 import FoldText from "@/shared/ui/fold-text";
 import { useGetProjectDetail } from "@/features/project/services/use-get-project-detail";
+import { Blobatar } from "@blobatar/react";
+import { wink, unsure } from "blobatar/expression";
+import "blobatar/motion.css";
 
 function BackButton() {
   const navigate = useNavigate();
@@ -18,15 +22,33 @@ function BackButton() {
           navigate("/");
         }
       }}
-      className="inline-block text-sm text-gray-400 hover:text-[#111111] underline underline-offset-4 transition-colors cursor-pointer"
+      className="group flex w-fit items-center gap-2 rounded-full border border-neutral-200 bg-white py-1.5 pl-1.5 pr-4 text-sm text-[#111111] transition-all duration-300 cursor-pointer hover:border-neutral-300/95"
     >
-      &larr; Back
+      <Blobatar
+        name="alain00"
+        expression={unsure}
+        animate="hover"
+        className="w-8 h-8 shrink-0"
+      />
+      <span className="whitespace-nowrap">Tap to go back</span>
     </button>
   );
 }
 
 export function ProjectDetailPage() {
   const { slug } = useParams<{ slug: string }>();
+
+  const [showScrollTop, setShowScrollTop] = useState(false);
+
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: "instant" });
+  }, [slug]);
+
+  useEffect(() => {
+    const handleScroll = () => setShowScrollTop(window.scrollY > 300);
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   const {
     data: projectDetail,
@@ -160,6 +182,26 @@ export function ProjectDetailPage() {
           </div>
         )}
       </div>
+
+      {/* Scroll to top button */}
+      <button
+        type="button"
+        aria-label="Scroll to top"
+        onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+        className={`group fixed bottom-8 right-8 z-50 flex w-fit items-center gap-2 rounded-full border border-neutral-200 bg-white py-1.5 pl-4 pr-1.5 text-sm text-[#111111] transition-all duration-300 cursor-pointer hover:border-neutral-300/95 ${
+          showScrollTop
+            ? "opacity-100 translate-y-0"
+            : "opacity-0 translate-y-4 pointer-events-none"
+        }`}
+      >
+        <span className="whitespace-nowrap">Back to top</span>
+        <Blobatar
+          name="alain00"
+          expression={wink}
+          animate="hover"
+          className="w-8 h-8 shrink-0"
+        />
+      </button>
     </main>
   );
 }
