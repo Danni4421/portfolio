@@ -14,13 +14,7 @@ import { apiClient } from "@/shared/api/client";
 import { Effect } from "effect";
 import { useToast } from "@/shared/ui/toast";
 import { FileUploader } from "@/shared/ui/file-uploader";
-import type { Project } from "@/entities/project/model/types";
-
-interface ProjectImage {
-  id: string;
-  project_id: string;
-  image_url: string;
-}
+import type { Project, ProjectImage } from "../types";
 
 interface ProjectGalleryDrawerProps {
   open: boolean;
@@ -58,11 +52,11 @@ export function ProjectGalleryDrawer({
         );
       })
       .then((res) => {
-        const updated = {
+        const updated: Project = {
           ...project,
           images: [...(project.images || []), res.data],
         };
-        setProject(updated as any);
+        setProject(updated);
         setSelectedFile(null);
         onSuccess();
         onOpenChange(false);
@@ -79,11 +73,11 @@ export function ProjectGalleryDrawer({
   const handleDeleteProjectImage = (imgId: string) => {
     Effect.runPromise(apiClient.delete(`/api/v1/project-images/${imgId}`, "?soft=false"))
       .then(() => {
-        const updated = {
+        const updated: Project = {
           ...project,
-          images: (project.images || []).filter((i) => i.id !== imgId),
+          images: (project.images || []).filter((i: ProjectImage) => i.id !== imgId),
         };
-        setProject(updated as any);
+        setProject(updated);
         onSuccess();
         toast({ title: "Deleted", description: "Gallery image deleted successfully", variant: "success" });
       })
@@ -119,7 +113,7 @@ export function ProjectGalleryDrawer({
                 Existing Images
               </h4>
               <div className="grid grid-cols-4 gap-3 max-h-[140px] overflow-y-auto pr-1">
-                {project.images?.map((img) => (
+                {project.images?.map((img: ProjectImage) => (
                   <div key={img.id} className="relative group rounded-lg overflow-hidden border border-border h-14 bg-white flex items-center justify-center">
                     <img src={img.image_url} alt="Gallery" className="w-full h-full object-cover" />
                     <button

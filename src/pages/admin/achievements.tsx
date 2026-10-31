@@ -11,7 +11,7 @@ import { useToast } from "@/shared/ui/toast";
 import { ConfirmDialog } from "@/shared/ui/confirm-dialog";
 import { AchievementDrawer } from "@/features/achievement/components/achievement-drawer";
 import { AchievementResourcesDrawer } from "@/features/achievement/components/achievement-resources-drawer";
-import type { Achievement } from "@/entities/achievement/model/types";
+import type { Achievement } from "@/features/achievement/types";
 
 export function AdminAchievementsPage() {
   const { toast } = useToast();

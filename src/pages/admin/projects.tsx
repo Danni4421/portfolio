@@ -23,19 +23,14 @@ import {
   TableCell,
 } from "@/components/ui/table";
 import { Skeleton } from "@/shared/ui/skeleton";
-import type { Project } from "@/entities/project/model/types";
+import type { Project } from "@/features/project/types";
+import type { TechStack } from "@/features/tech-stack/types";
 
 interface ApiResponse<T> {
   success: boolean;
   data: T;
 }
 
-interface TechStack {
-  id: string;
-  name: string;
-  image_logo: string;
-  redirect_url: string;
-}
 export function AdminProjectsPage() {
   const { toast } = useToast();
   const [projects, setProjects] = useState<Project[]>([]);

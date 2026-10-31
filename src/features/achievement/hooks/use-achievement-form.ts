@@ -5,6 +5,7 @@ import { z } from "zod"
 import { apiClient } from "@/shared/api/client"
 import { Effect } from "effect"
 import { useToast } from "@/shared/ui/toast"
+import type { Achievement } from "../types"
 
 export const achievementSchema = z.object({
   title: z.string().min(1, "Title is required"),
@@ -14,21 +15,6 @@ export const achievementSchema = z.object({
 })
 
 export type AchievementFormValues = z.infer<typeof achievementSchema>
-
-interface AchievementResource {
-  id: string;
-  achievement_id: string;
-  resource_url: string;
-}
-
-interface Achievement {
-  id: string;
-  title: string;
-  description: string;
-  source_logo_url: string;
-  redirect_url: string;
-  resources: AchievementResource[];
-}
 
 interface ApiResponse<T> {
   success: boolean;

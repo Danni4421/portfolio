@@ -1,10 +1,6 @@
-// ponytail: separate project relations dialog component
-import React from "react";
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { Loader2, Plus, Trash2, BookOpen, Layers, Globe, PlusCircle, Trash, ExternalLink } from "lucide-react";
-
 import { Input } from "@/shared/ui/input";
-
 import {
   Dialog,
   DialogContent,
@@ -15,11 +11,10 @@ import { apiClient } from "@/shared/api/client";
 import { Effect } from "effect";
 import { useToast } from "@/shared/ui/toast";
 import { FileUploader } from "@/shared/ui/file-uploader";
-import type { Project } from "@/entities/project/model/types";
-import type { ProjectStory } from "@/entities/project/model/types";
-import type { ProjectImage } from "@/entities/project/model/types";
-import type { ProjectResource } from "@/entities/project/model/types";
-import type { TechStack } from "@/entities/tech-stack/model/types";
+import type { TechStack } from "@/features/tech-stack/types";
+import type { Project, ProjectStory, ProjectImage, ProjectResource } from "../types";
+import { useDeleteProjectStory } from "../hooks/use-delete-project-story";
+import { useCreateProjectStory } from "../hooks/use-create-project-story";
 
 interface ProjectRelationsDrawerProps {
   open: boolean;
@@ -42,7 +37,6 @@ export function ProjectRelationsDrawer({
 
   const [storyContent, setStoryContent] = useState("");
   const [storyAuthors, setStoryAuthors] = useState("Aji");
-  const [storyLoading, setStoryLoading] = useState(false);
   const [selectedStackId, setSelectedStackId] = useState("");
   const [stackLoading, setStackLoading] = useState(false);
   const [galleryUploading, setGalleryUploading] = useState(false);
@@ -55,62 +49,61 @@ export function ProjectRelationsDrawer({
     if (allStacks.length > 0 && !selectedStackId) {
       setSelectedStackId(allStacks[0].id);
     }
-  }, [allStacks]);
+  }, [allStacks, selectedStackId]);
+
+  const { mutate: createStory, isPending: isCreatingStory } = useCreateProjectStory({
+    onSuccess: (res) => {
+      setProject((prev) => {
+        if (!prev) return prev;
+        return {
+          ...prev,
+          stories: [...(prev.stories || []), res.data],
+        };
+      });
+      setStoryContent("");
+      onRefresh();
+      toast({ title: "Success", description: "Story block added successfully", variant: "success" });
+    },
+  });
+
+  const { mutate: deleteStory } = useDeleteProjectStory({
+    onSuccess: (_, variables) => {
+      setProject((prev) => {
+        if (!prev) return prev;
+        return {
+          ...prev,
+          stories: (prev.stories || []).filter(
+            (s: ProjectStory) => s.id !== variables.story_id,
+          ),
+        };
+      });
+      onRefresh();
+      toast({ title: "Deleted", description: "Story block deleted successfully", variant: "success" });
+    },
+  });
 
   if (!project) return null;
 
   const handleAddStory = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!storyContent) return;
+    if (!storyContent.trim()) return;
 
-    setStoryLoading(true);
-    const authors = storyAuthors.split(",").map((a) => a.trim()).filter((a) => a.length > 0);
-    Effect.runPromise(
-      apiClient.post<{ success: boolean; data: ProjectStory }>("/api/v1/project-stories", {
-        project_id: project.id,
-        content: storyContent,
-        author: authors,
-      })
-    )
-      .then((res) => {
-        const updated = {
-          ...project,
-          stories: [...(project.stories || []), res.data],
-        };
-        setProject(updated);
-        setStoryContent("");
-        onRefresh();
-        toast({ title: "Success", description: "Story block added successfully", variant: "success" });
-      })
-      .catch((err) => {
-        toast({ title: "Error", description: err.message || "Failed to add story block", variant: "destructive" });
-      })
-      .finally(() => {
-        setStoryLoading(false);
-      });
+    createStory({
+      project_id: project.id,
+      content: storyContent,
+      authors: storyAuthors,
+    });
   };
 
   const handleDeleteStory = (storyId: string) => {
-    Effect.runPromise(apiClient.delete(`/api/v1/project-stories/${storyId}`, "?soft=false"))
-      .then(() => {
-        const updated = {
-          ...project,
-          stories: (project.stories || []).filter((s) => s.id !== storyId),
-        };
-        setProject(updated);
-        onRefresh();
-        toast({ title: "Deleted", description: "Story block deleted successfully", variant: "success" });
-      })
-      .catch((err) => {
-        toast({ title: "Error", description: err.message || "Failed to delete story block", variant: "destructive" });
-      });
+    deleteStory({ story_id: storyId });
   };
 
   const handleLinkStack = (e: React.FormEvent) => {
     e.preventDefault();
     if (!selectedStackId) return;
 
-    if (project.tech_stacks?.some((s) => s.id === selectedStackId)) {
+    if (project.tech_stacks?.some((s: TechStack) => s.id === selectedStackId)) {
       toast({ title: "Link Error", description: "Tech stack already linked to this project", variant: "destructive" });
       return;
     }
@@ -125,7 +118,7 @@ export function ProjectRelationsDrawer({
       .then(() => {
         const linked = allStacks.find((s) => s.id === selectedStackId);
         if (linked) {
-          const updated = {
+          const updated: Project = {
             ...project,
             tech_stacks: [...(project.tech_stacks || []), linked],
           };
@@ -154,9 +147,9 @@ export function ProjectRelationsDrawer({
         return Effect.runPromise(apiClient.delete(`/api/v1/project-tech-stacks/${join.id}`, "?soft=false"));
       })
       .then(() => {
-        const updated = {
+        const updated: Project = {
           ...project,
-          tech_stacks: (project.tech_stacks || []).filter((s) => s.id !== stackId),
+          tech_stacks: (project.tech_stacks || []).filter((s: TechStack) => s.id !== stackId),
         };
         setProject(updated);
         onRefresh();
@@ -179,7 +172,7 @@ export function ProjectRelationsDrawer({
         );
       })
       .then((res) => {
-        const updated = {
+        const updated: Project = {
           ...project,
           images: [...(project.images || []), res.data],
         };
@@ -198,9 +191,9 @@ export function ProjectRelationsDrawer({
   const handleDeleteProjectImage = (imgId: string) => {
     Effect.runPromise(apiClient.delete(`/api/v1/project-images/${imgId}`, "?soft=false"))
       .then(() => {
-        const updated = {
+        const updated: Project = {
           ...project,
-          images: (project.images || []).filter((i) => i.id !== imgId),
+          images: (project.images || []).filter((i: ProjectImage) => i.id !== imgId),
         };
         setProject(updated);
         onRefresh();
@@ -225,7 +218,7 @@ export function ProjectRelationsDrawer({
       })
     )
       .then((res) => {
-        const updated = {
+        const updated: Project = {
           ...project,
           resources: [...(project.resources || []), res.data],
         };
@@ -247,9 +240,9 @@ export function ProjectRelationsDrawer({
   const handleDeleteResourceLink = (resId: string) => {
     Effect.runPromise(apiClient.delete(`/api/v1/project-resources/${resId}`, "?soft=false"))
       .then(() => {
-        const updated = {
+        const updated: Project = {
           ...project,
-          resources: (project.resources || []).filter((r) => r.id !== resId),
+          resources: (project.resources || []).filter((r: ProjectResource) => r.id !== resId),
         };
         setProject(updated);
         onRefresh();
@@ -289,9 +282,9 @@ export function ProjectRelationsDrawer({
                   <button
                     type="submit"
                     className="p-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg cursor-pointer transition-all flex items-center justify-center h-9"
-                    disabled={storyLoading}
+                    disabled={isCreatingStory}
                   >
-                    {storyLoading ? <Loader2 size={14} className="animate-spin" /> : <Plus size={14} />}
+                    {isCreatingStory ? <Loader2 size={14} className="animate-spin" /> : <Plus size={14} />}
                   </button>
                 </div>
                 <div className="flex items-center gap-2">
@@ -306,11 +299,11 @@ export function ProjectRelationsDrawer({
                 </div>
               </form>
 
-              <div className="space-y-2 max-h-[160px] overflow-y-auto pr-1">
-                {project.stories?.map((st) => (
+              <div className="space-y-2 max-h-40 overflow-y-auto pr-1">
+                {project.stories?.map((st: ProjectStory) => (
                   <div key={st.id} className="flex items-start justify-between gap-3 p-2.5 bg-neutral-50 border border-neutral-200 rounded-lg text-xs leading-normal">
                     <div className="flex-1 min-w-0">
-                      <p className="text-neutral-750 font-sans break-words">{st.content}</p>
+                      <p className="text-neutral-750 font-sans wrap-break-word">{st.content}</p>
                       <span className="text-[9px] text-neutral-400 font-mono block mt-1">By: {st.author.join(", ")}</span>
                     </div>
                     <button onClick={() => handleDeleteStory(st.id)} className="text-red-550 hover:text-red-655 p-1 cursor-pointer flex-shrink-0">
@@ -351,7 +344,7 @@ export function ProjectRelationsDrawer({
               </form>
 
               <div className="flex flex-wrap gap-2 max-h-[140px] overflow-y-auto pr-1">
-                {project.tech_stacks?.map((stack) => (
+                {project.tech_stacks?.map((stack: TechStack) => (
                   <div key={stack.id} className="flex items-center gap-1.5 pl-2 pr-1.5 py-1 bg-white border border-neutral-200 rounded-full shadow-xs text-xs font-medium">
                     <img src={stack.image_logo} alt={stack.name} className="w-4.5 h-4.5 object-contain" />
                     <span className="text-neutral-800">{stack.name}</span>
@@ -382,7 +375,7 @@ export function ProjectRelationsDrawer({
               />
 
               <div className="grid grid-cols-4 gap-3 max-h-[140px] overflow-y-auto pr-1">
-                {project.images?.map((img) => (
+                {project.images?.map((img: ProjectImage) => (
                   <div key={img.id} className="relative group rounded-lg overflow-hidden border border-neutral-200 h-14 bg-white flex items-center justify-center">
                     <img src={img.image_url} alt="Gallery" className="w-full h-full object-cover" />
                     <button
@@ -416,7 +409,7 @@ export function ProjectRelationsDrawer({
                   <select
                     value={resourceType}
                     onChange={(e) => setResourceType(e.target.value)}
-                    className="bg-white border border-neutral-300 text-neutral-900 text-xs rounded-lg p-2 focus:border-[#ec7211] outline-none"
+                    className="bg-white border-neutral-300 text-neutral-900 text-xs rounded-lg p-2 focus:border-[#ec7211] outline-none"
                   >
                     <option value="repository">GitHub Repo</option>
                     <option value="documentation">Docs</option>
@@ -445,7 +438,7 @@ export function ProjectRelationsDrawer({
               </form>
 
               <div className="space-y-2 max-h-[160px] overflow-y-auto pr-1">
-                {project.resources?.map((r) => (
+                {project.resources?.map((r: ProjectResource) => (
                   <div key={r.id} className="flex items-center justify-between gap-3 p-2 bg-neutral-50 border border-neutral-200 rounded-lg text-xs">
                     <div className="flex-1 min-w-0 flex items-center gap-2">
                       <span className="px-1.5 py-0.5 bg-neutral-200 text-neutral-600 rounded font-semibold text-[8px] uppercase tracking-wider">{r.type}</span>

@@ -1,5 +1,4 @@
-
-import type { Achievement } from "../model/types"
+import type { Achievement } from "../types";
 
 export function AchievementCard({ achievement }: { achievement: Achievement }) {
   return (
@@ -27,8 +26,15 @@ export function AchievementCard({ achievement }: { achievement: Achievement }) {
       </div>
 
       <div className="h-48 w-fit overflow-hidden rounded-lg object-cover">
-        <img src={achievement.source_logo_url || "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='150' height='150'%3E%3Crect fill='%23e5e7eb' width='150' height='150'/%3E%3C/svg%3E"} alt={achievement.title} className="h-full w-full object-cover" />
+        <img
+          src={
+            achievement.source_logo_url ||
+            "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='150' height='150'%3E%3Crect fill='%23e5e7eb' width='150' height='150'/%3E%3C/svg%3E"
+          }
+          alt={achievement.title}
+          className="h-full w-full object-cover"
+        />
       </div>
     </div>
-  )
+  );
 }

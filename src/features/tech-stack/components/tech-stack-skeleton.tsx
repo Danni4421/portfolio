@@ -1,5 +1,4 @@
-
-import { Skeleton } from "@/shared/ui/skeleton"
+import { Skeleton } from "@/shared/ui/skeleton";
 
 export function TechStackSkeletonList() {
   return (
@@ -11,5 +10,5 @@ export function TechStackSkeletonList() {
         </div>
       ))}
     </div>
-  )
+  );
 }

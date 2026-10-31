@@ -10,7 +10,7 @@ import {
 import { useAchievementForm } from "@/features/achievement/hooks/use-achievement-form";
 import { FormField, FormTextField, FormTextAreaField } from "@/shared/ui/form";
 import { FileUploader } from "@/shared/ui/file-uploader";
-import type { Achievement } from "@/entities/achievement/model/types";
+import type { Achievement } from "../types";
 
 interface AchievementDrawerProps {
   open: boolean;

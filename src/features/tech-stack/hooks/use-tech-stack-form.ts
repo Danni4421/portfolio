@@ -5,6 +5,7 @@ import { z } from "zod"
 import { apiClient } from "@/shared/api/client"
 import { Effect } from "effect"
 import { useToast } from "@/shared/ui/toast"
+import type { TechStack } from "../types"
 
 export const techStackSchema = z.object({
   name: z.string().min(1, "Stack name is required"),
@@ -13,14 +14,6 @@ export const techStackSchema = z.object({
 })
 
 export type TechStackFormValues = z.infer<typeof techStackSchema>
-
-interface TechStack {
-  id: string;
-  name: string;
-  image_logo: string;
-  redirect_url: string;
-  sort_order?: number;
-}
 
 interface ApiResponse<T> {
   success: boolean;

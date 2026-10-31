@@ -1,5 +1,6 @@
 import { ArrowRight, ExternalLink, Github } from "lucide-react";
-import type { Project, ProjectResource } from "../model/types";
+import type { Project, ProjectResource } from "../types";
+import type { TechStack } from "@/features/tech-stack/types";
 import { Button } from "@/shared/ui/button";
 import { useCallback, useMemo } from "react";
 
@@ -48,15 +49,15 @@ function ProjectRepository({
   );
 }
 
-export function ProjectCard({ project }: { project: Project; index: number }) {
+export function ProjectCard({ project }: { project: Project; index?: number }) {
   const hasStory = project.stories && project.stories.length > 0;
 
   const repositories: Array<ProjectResource> = useMemo(() => {
-    return project.resources?.filter((r) => r.type === "repository");
+    return project.resources?.filter((r: ProjectResource) => r.type === "repository") ?? [];
   }, [project.resources]);
 
   const liveUrls: Array<ProjectResource> = useMemo(() => {
-    return project.resources?.filter((r) => r.type === "live_demo");
+    return project.resources?.filter((r: ProjectResource) => r.type === "live_demo") ?? [];
   }, [project.resources]);
 
   return (
@@ -64,13 +65,16 @@ export function ProjectCard({ project }: { project: Project; index: number }) {
       {/* Project Image */}
       <div className="relative aspect-video w-full overflow-hidden rounded-xl bg-neutral-100">
         <img
-          src={project.thumbnail_url ?? "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='800' height='600'%3E%3Crect fill='%23e5e7eb' width='800' height='600'/%3E%3C/svg%3E"}
+          src={
+            project.thumbnail_url ??
+            "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='800' height='600'%3E%3Crect fill='%23e5e7eb' width='800' height='600'/%3E%3C/svg%3E"
+          }
           alt={project.title}
           className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
         />
         {/* Overlay Badge */}
         <div className="absolute top-3 right-3 flex flex-wrap justify-end gap-1.5">
-          {project.tech_stacks.slice(0, 3).map((tech) => (
+          {project.tech_stacks?.slice(0, 3).map((tech: TechStack) => (
             <span
               key={tech.id}
               className="rounded-full bg-white/95 px-2.5 py-0.5 text-[10px] font-semibold text-neutral-900 backdrop-blur shadow-sm"
@@ -99,21 +103,17 @@ export function ProjectCard({ project }: { project: Project; index: number }) {
             </ProjectLink>
           )}
 
-          {repositories.map((repo) => {
-            return (
-              <ProjectRepository url={repo.resource_url}>
-                {repo.title}
-              </ProjectRepository>
-            );
-          })}
+          {repositories.map((repo) => (
+            <ProjectRepository key={repo.id} url={repo.resource_url}>
+              {repo.title}
+            </ProjectRepository>
+          ))}
 
-          {liveUrls.map((liveUrl) => {
-            return (
-              <ProjectLink url={liveUrl.resource_url} icon={ExternalLink}>
-                {liveUrl.title}
-              </ProjectLink>
-            );
-          })}
+          {liveUrls.map((liveUrl) => (
+            <ProjectLink key={liveUrl.id} url={liveUrl.resource_url} icon={ExternalLink}>
+              {liveUrl.title}
+            </ProjectLink>
+          ))}
         </div>
       </div>
     </div>

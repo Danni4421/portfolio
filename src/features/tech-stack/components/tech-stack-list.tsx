@@ -1,7 +1,4 @@
-import { useQuery } from "@tanstack/react-query";
-import { Effect } from "effect";
-import { getTechStacks } from "@/entities/tech-stack/api/tech-stack";
-import type { TechStack } from "@/entities/tech-stack/model/types";
+import { useGetTechStacks } from "../services/use-get-tech-stacks";
 import FoldText from "@/shared/ui/fold-text";
 
 export function TechStackList() {
@@ -9,19 +6,7 @@ export function TechStackList() {
     data: techStacks,
     isLoading: loading,
     isError,
-  } = useQuery<Array<TechStack>>({
-    queryKey: ["techStacks"],
-    queryFn: () =>
-      Effect.runPromise(
-        getTechStacks().pipe(
-          Effect.map(({ stacks }) =>
-            [...stacks].sort(
-              (a, b) => (a.sort_order ?? 0) - (b.sort_order ?? 0),
-            ),
-          ),
-        ),
-      ),
-  });
+  } = useGetTechStacks();
 
   if (loading) {
     return (
@@ -39,6 +24,7 @@ export function TechStackList() {
       </section>
     );
   }
+
   if (isError || !techStacks || techStacks.length === 0) {
     return (
       <section className="py-16 md:py-24 border-t border-gray-100">

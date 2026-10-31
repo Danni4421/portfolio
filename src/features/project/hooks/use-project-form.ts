@@ -5,6 +5,7 @@ import { z } from "zod"
 import { apiClient } from "@/shared/api/client"
 import { Effect } from "effect"
 import { useToast } from "@/shared/ui/toast"
+import type { Project } from "../types"
 
 export const projectSchema = z.object({
   title: z.string().min(1, "Title is required"),
@@ -15,45 +16,6 @@ export const projectSchema = z.object({
 })
 
 export type ProjectFormValues = z.infer<typeof projectSchema>
-
-interface TechStack {
-  id: string;
-  name: string;
-  image_logo: string;
-  redirect_url: string;
-}
-
-interface ProjectStory {
-  id: string;
-  project_id: string;
-  content: string;
-  author: string[];
-}
-
-interface ProjectImage {
-  id: string;
-  project_id: string;
-  image_url: string;
-}
-
-interface ProjectResource {
-  id: string;
-  project_id: string;
-  resource_url: string;
-  type: string;
-  title: string;
-}
-
-interface Project {
-  id: string;
-  title: string;
-  description: string;
-  thumbnail_url: string;
-  stories: ProjectStory[];
-  tech_stacks: TechStack[];
-  images: ProjectImage[];
-  resources: ProjectResource[];
-}
 
 interface ApiResponse<T> {
   success: boolean;

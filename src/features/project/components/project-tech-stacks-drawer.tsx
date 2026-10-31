@@ -1,5 +1,5 @@
 // ponytail: separate project tech stacks manager sheet component
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -16,20 +16,14 @@ import {
 import { apiClient } from "@/shared/api/client";
 import { Effect } from "effect";
 import { useToast } from "@/shared/ui/toast";
-import type { Project } from "@/entities/project/model/types";
+import type { TechStack } from "@/features/tech-stack/types";
+import type { Project } from "../types";
 
 const linkStackSchema = z.object({
   stack_id: z.string().min(1, "Select a tech stack"),
 });
 
 type LinkStackFormValues = z.infer<typeof linkStackSchema>;
-
-interface TechStack {
-  id: string;
-  name: string;
-  image_logo: string;
-  redirect_url: string;
-}
 
 interface ProjectTechStacksDrawerProps {
   open: boolean;
@@ -71,7 +65,7 @@ export function ProjectTechStacksDrawer({
   const handleLinkStack = form.handleSubmit((values) => {
     const selectedStackId = values.stack_id;
 
-    if (project.tech_stacks?.some((s) => s.id === selectedStackId)) {
+    if (project.tech_stacks?.some((s: TechStack) => s.id === selectedStackId)) {
       toast({ title: "Link Error", description: "Tech stack already linked to this project", variant: "destructive" });
       return;
     }
@@ -86,11 +80,11 @@ export function ProjectTechStacksDrawer({
       .then(() => {
         const linked = allStacks.find((s) => s.id === selectedStackId);
         if (linked) {
-          const updated = {
+          const updated: Project = {
             ...project,
             tech_stacks: [...(project.tech_stacks || []), linked],
           };
-          setProject(updated as any);
+          setProject(updated);
         }
         onSuccess();
         onOpenChange(false);
@@ -116,11 +110,11 @@ export function ProjectTechStacksDrawer({
         return Effect.runPromise(apiClient.delete(`/api/v1/project-tech-stacks/${join.id}`, "?soft=false"));
       })
       .then(() => {
-        const updated = {
+        const updated: Project = {
           ...project,
-          tech_stacks: (project.tech_stacks || []).filter((s) => s.id !== stackId),
+          tech_stacks: (project.tech_stacks || []).filter((s: TechStack) => s.id !== stackId),
         };
-        setProject(updated as any);
+        setProject(updated);
         onSuccess();
         toast({ title: "Deleted", description: "Tech stack unlinked successfully", variant: "success" });
       })
@@ -157,7 +151,7 @@ export function ProjectTechStacksDrawer({
                 Linked Tech Stacks
               </h4>
               <div className="flex flex-wrap gap-2 max-h-[160px] overflow-y-auto pr-1">
-                {project.tech_stacks?.map((stack) => (
+                {project.tech_stacks?.map((stack: TechStack) => (
                   <div key={stack.id} className="flex items-center gap-1.5 pl-2 pr-1.5 py-1 bg-white border border-border rounded-full shadow-xs text-xs font-medium">
                     <img src={stack.image_logo} alt={stack.name} className="w-4.5 h-4.5 object-contain" />
                     <span className="text-foreground">{stack.name}</span>

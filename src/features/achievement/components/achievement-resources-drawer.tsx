@@ -15,19 +15,13 @@ import {
 import { apiClient } from "@/shared/api/client";
 import { Effect } from "effect";
 import { useToast } from "@/shared/ui/toast";
-import type { Achievement } from "@/entities/achievement/model/types";
+import type { Achievement, AchievementResource } from "../types";
 
 const resourceSchema = z.object({
   resource_url: z.string().min(1, "Resource URL is required"),
 });
 
 type ResourceFormValues = z.infer<typeof resourceSchema>;
-
-interface AchievementResource {
-  id: string;
-  achievement_id: string;
-  resource_url: string;
-}
 
 interface AchievementResourcesDrawerProps {
   open: boolean;

@@ -10,7 +10,7 @@ import {
 import { useProjectForm } from "@/features/project/hooks/use-project-form";
 import { FormField, FormTextField, FormTextAreaField } from "@/shared/ui/form";
 import { FileUploader } from "@/shared/ui/file-uploader";
-import type { Project } from "@/entities/project/model/types";
+import type { Project } from "../types";
 
 interface ProjectDrawerProps {
   open: boolean;

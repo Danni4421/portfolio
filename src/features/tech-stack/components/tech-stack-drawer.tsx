@@ -12,14 +12,7 @@ import {
 import { useTechStackForm } from "@/features/tech-stack/hooks/use-tech-stack-form";
 import { FormField, FormTextField } from "@/shared/ui/form";
 import { FileUploader } from "@/shared/ui/file-uploader";
-
-interface TechStack {
-  id: string;
-  name: string;
-  image_logo: string;
-  redirect_url: string;
-  sort_order?: number;
-}
+import type { TechStack } from "../types";
 
 interface TechStackDrawerProps {
   open: boolean;

@@ -1,12 +1,9 @@
 import { useEffect, useRef, type RefObject } from "react";
-import { Effect } from "effect";
 import { SectionHeader } from "@/shared/ui/section-header";
-import { AchievementCard } from "@/entities/achievement/ui/achievement-card";
-import { getAchievements } from "@/entities/achievement/api/achievement";
-import { useQuery } from "@tanstack/react-query";
+import { AchievementCard } from "./achievement-card";
+import { useGetAchievements } from "../services/use-get-achievements";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import type { Achievement } from "@/entities/achievement/model/types";
 import FoldText from "@/shared/ui/fold-text";
 
 gsap.registerPlugin(ScrollTrigger);
@@ -15,21 +12,7 @@ export function AchievementList() {
   const containerRef: RefObject<HTMLDivElement | null> =
     useRef<HTMLDivElement>(null);
 
-  const { data: achievements, isLoading, isError } = useQuery<Array<Achievement>>({
-    queryKey: ["achievements"],
-    queryFn: () =>
-      Effect.runPromise(
-        getAchievements().pipe(
-          Effect.map(
-            ({
-              achievements,
-            }: {
-              achievements: Array<Achievement>;
-            }): Array<Achievement> => achievements,
-          ),
-        ),
-      ),
-  });
+  const { data: achievements, isLoading, isError } = useGetAchievements();
 
   useEffect(() => {
     if (!achievements || achievements.length === 0) return;

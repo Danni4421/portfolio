@@ -1,41 +1,32 @@
-
-import { useNavigate, useParams } from "react-router-dom"
-import Markdown from "react-markdown"
-import remarkGfm from "remark-gfm"
-import { Effect } from "effect"
-import { getProjectBySlug } from "@/entities/project/api/project"
-import { Skeleton } from "@/shared/ui/skeleton"
-import FoldText from "@/shared/ui/fold-text"
-import { useQuery } from "@tanstack/react-query"
-import type { Project } from "@/entities/project/model/types"
-
-interface ProjectDetailData {
-  project: Project | null
-  markdown: string
-}
+import { useNavigate, useParams } from "react-router-dom";
+import Markdown from "react-markdown";
+import remarkGfm from "remark-gfm";
+import { Skeleton } from "@/shared/ui/skeleton";
+import FoldText from "@/shared/ui/fold-text";
+import { useGetProjectDetail } from "@/features/project/services/use-get-project-detail";
 
 function BackButton() {
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   return (
     <button
       type="button"
       onClick={() => {
         if ((window.history.state as { idx?: number } | null)?.idx) {
-          navigate(-1)
+          navigate(-1);
         } else {
-          navigate("/")
+          navigate("/");
         }
       }}
       className="inline-block text-sm text-gray-400 hover:text-[#111111] underline underline-offset-4 transition-colors cursor-pointer"
     >
       &larr; Back
     </button>
-  )
+  );
 }
 
 export function ProjectDetailPage() {
-  const { slug } = useParams<{ slug: string }>()
+  const { slug } = useParams<{ slug: string }>();
 
   const {
     data: projectDetail,
@@ -43,28 +34,10 @@ export function ProjectDetailPage() {
     isError,
     error,
     refetch,
-  } = useQuery<ProjectDetailData>({
-    queryKey: ["project", slug],
-    queryFn: () =>
-      Effect.runPromise(
-        Effect.gen(function* () {
-          const { project: fetchedProject } = yield* getProjectBySlug(slug!)
+  } = useGetProjectDetail({ slug: slug ?? "" });
 
-          let markdown = ""
-          if (fetchedProject && fetchedProject.stories && fetchedProject.stories.length > 0) {
-            // Concatenate all stories content
-            markdown = fetchedProject.stories.map((s) => s.content).join("\n\n")
-          }
-
-          return { project: fetchedProject, markdown }
-        })
-      ),
-    enabled: !!slug,
-  })
-
-  const project = projectDetail?.project ?? null
-  const storyMarkdown = projectDetail?.markdown ?? ""
-
+  const project = projectDetail?.project ?? null;
+  const storyMarkdown = projectDetail?.markdown ?? "";
 
   if (loading) {
     return (
@@ -95,11 +68,11 @@ export function ProjectDetailPage() {
           </div>
         </div>
       </main>
-    )
+    );
   }
 
   if (isError) {
-    const notFound = error instanceof Error && error.message.includes("404")
+    const notFound = error instanceof Error && error.message.includes("404");
 
     if (notFound) {
       return (
@@ -111,7 +84,7 @@ export function ProjectDetailPage() {
             </h1>
           </div>
         </main>
-      )
+      );
     }
 
     return (
@@ -130,7 +103,7 @@ export function ProjectDetailPage() {
           </button>
         </div>
       </main>
-    )
+    );
   }
 
   if (!project) {
@@ -143,7 +116,7 @@ export function ProjectDetailPage() {
           </h1>
         </div>
       </main>
-    )
+    );
   }
 
   return (
@@ -188,5 +161,5 @@ export function ProjectDetailPage() {
         )}
       </div>
     </main>
-  )
+  );
 }

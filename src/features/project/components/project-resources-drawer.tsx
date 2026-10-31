@@ -16,7 +16,7 @@ import {
 import { apiClient } from "@/shared/api/client";
 import { Effect } from "effect";
 import { useToast } from "@/shared/ui/toast";
-import type { Project, ProjectResource } from "@/entities/project/model/types";
+import type { Project, ProjectResource } from "../types";
 
 const resourceSchema = z.object({
   title: z.string().min(1, "Link title is required"),
@@ -69,10 +69,11 @@ export function ProjectResourcesDrawer({
       })
     )
       .then((res) => {
-        setProject({
+        const updated: Project = {
           ...project,
           resources: [...(project.resources || []), res.data],
-        });
+        };
+        setProject(updated);
         form.reset({ title: "", type: "repository", url: "" });
         onSuccess();
         onOpenChange(false);
@@ -89,10 +90,11 @@ export function ProjectResourcesDrawer({
   const handleDeleteResourceLink = (resId: string) => {
     Effect.runPromise(apiClient.delete(`/api/v1/project-resources/${resId}`, "?soft=false"))
       .then(() => {
-        setProject({
+        const updated: Project = {
           ...project,
-          resources: (project.resources || []).filter((r) => r.id !== resId),
-        });
+          resources: (project.resources || []).filter((r: ProjectResource) => r.id !== resId),
+        };
+        setProject(updated);
         onSuccess();
         toast({ title: "Deleted", description: "Resource link deleted successfully", variant: "success" });
       })
@@ -149,7 +151,7 @@ export function ProjectResourcesDrawer({
                 Existing Resources
               </h4>
               <div className="space-y-2 max-h-[160px] overflow-y-auto pr-1">
-                {project.resources?.map((r) => (
+                {project.resources?.map((r: ProjectResource) => (
                   <div key={r.id} className="flex items-center justify-between gap-3 p-2.5 bg-muted/50 border border-border rounded-lg text-xs leading-normal">
                     <div className="flex-1 min-w-0">
                       <span className="font-semibold text-foreground block">{r.title}</span>

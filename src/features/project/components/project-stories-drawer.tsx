@@ -19,7 +19,7 @@ import {
 import { apiClient } from "@/shared/api/client";
 import { Effect } from "effect";
 import { useToast } from "@/shared/ui/toast";
-import type { Project, ProjectStory } from "@/entities/project/model/types";
+import type { Project, ProjectStory } from "../types";
 
 const storySchema = z.object({
   authors: z.string().min(1, "Authors are required"),
@@ -100,15 +100,15 @@ export function ProjectStoriesDrawer({
 
     Effect.runPromise(request)
       .then((res) => {
-        const updatedProject = editingStory
+        const updatedProject: Project = editingStory
           ? {
               ...project,
-              stories: (project.stories || []).map((s) =>
+              stories: (project.stories || []).map((s: ProjectStory) =>
                 s.id === res.data.id ? res.data : s,
               ),
             }
           : { ...project, stories: [...(project.stories || []), res.data] };
-        setProject(updatedProject as Project);
+        setProject(updatedProject);
         toast({
           title: "Success",
           description: editingStory
@@ -140,11 +140,11 @@ export function ProjectStoriesDrawer({
       apiClient.delete(`/api/v1/project-stories/${storyId}`, "?soft=false"),
     )
       .then(() => {
-        const updated = {
+        const updated: Project = {
           ...project,
-          stories: (project.stories || []).filter((s) => s.id !== storyId),
+          stories: (project.stories || []).filter((s: ProjectStory) => s.id !== storyId),
         };
-        setProject(updated as Project);
+        setProject(updated);
         if (editingStory?.id === storyId) resetForm();
         onSuccess();
         toast({
@@ -215,7 +215,7 @@ export function ProjectStoriesDrawer({
                 Existing Stories
               </h4>
               <div className="space-y-2 max-h-[220px] overflow-y-auto pr-1">
-                {project.stories?.map((st, index) => (
+                {project.stories?.map((st: ProjectStory, index: number) => (
                   <div
                     key={st.id}
                     className={
