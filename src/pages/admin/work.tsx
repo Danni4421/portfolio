@@ -1,6 +1,6 @@
 // ponytail: work experiences crud page separated from unified dashboard layout
 import { useState, useEffect } from "react";
-import { Plus, Edit2, Trash2, BookOpen } from "lucide-react";
+import { Plus, Edit2, Trash2, BookOpen, Image as ImageIcon } from "lucide-react";
 import { Button } from "@/shared/ui/button";
 import { Card } from "@/shared/ui/card";
 import { Skeleton } from "@/shared/ui/skeleton";
@@ -19,6 +19,7 @@ import { ConfirmDialog } from "@/shared/ui/confirm-dialog";
 import type { WorkExperience } from "@/features/work-experience/types";
 import { WorkExperienceDrawer } from "@/features/work-experience/components/work-experience-drawer";
 import { WorkExperienceDescriptionsDrawer } from "@/features/work-experience/components/work-experience-descriptions-drawer";
+import { WorkExperienceImagesDrawer } from "@/features/work-experience/components/work-experience-images-drawer";
 
 export function AdminWorkPage() {
   const { toast } = useToast();
@@ -27,6 +28,7 @@ export function AdminWorkPage() {
   const [formOpen, setFormOpen] = useState(false);
   const [editingExp, setEditingExp] = useState<WorkExperience | null>(null);
   const [descOpen, setDescOpen] = useState(false);
+  const [imagesOpen, setImagesOpen] = useState(false);
   const [deleteId, setDeleteId] = useState<string | null>(null);
   const [deleting, setDeleting] = useState(false);
 
@@ -50,6 +52,7 @@ export function AdminWorkPage() {
   const handleOpenCreate = () => { setEditingExp(null); setFormOpen(true); };
   const handleOpenEdit = (exp: WorkExperience) => { setEditingExp(exp); setFormOpen(true); };
   const handleOpenDescriptions = (exp: WorkExperience) => { setEditingExp(exp); setDescOpen(true); };
+  const handleOpenImages = (exp: WorkExperience) => { setEditingExp(exp); setImagesOpen(true); };
 
   const handleDelete = () => {
     if (!deleteId) return;
@@ -101,11 +104,21 @@ export function AdminWorkPage() {
             ) : (
               experiences.map((exp) => (
                 <TableRow key={exp.id}>
-                  <TableCell className="font-medium text-foreground">{exp.title}</TableCell>
+                  <TableCell className="font-medium text-foreground">
+                    <div className="flex flex-col">
+                      <span>{exp.title}</span>
+                      <span className="text-xs font-normal text-muted-foreground">
+                        {exp.images?.length ?? 0} images
+                      </span>
+                    </div>
+                  </TableCell>
                   <TableCell className="text-right">
                     <div className="flex justify-end gap-1">
                       <Button variant="outline" size="icon-sm" onClick={() => handleOpenDescriptions(exp)} aria-label="Manage job descriptions">
                         <BookOpen size={14} />
+                      </Button>
+                      <Button variant="outline" size="icon-sm" onClick={() => handleOpenImages(exp)} aria-label="Manage experience images">
+                        <ImageIcon size={14} />
                       </Button>
                       <Button variant="default" size="icon-sm" onClick={() => handleOpenEdit(exp)} aria-label="Edit experience">
                         <Edit2 size={14} />
@@ -135,6 +148,16 @@ export function AdminWorkPage() {
         <WorkExperienceDescriptionsDrawer
           open={descOpen}
           onOpenChange={setDescOpen}
+          experience={editingExp}
+          setExperience={setEditingExp}
+          onSuccess={fetchExperiences}
+        />
+      )}
+
+      {imagesOpen && (
+        <WorkExperienceImagesDrawer
+          open={imagesOpen}
+          onOpenChange={setImagesOpen}
           experience={editingExp}
           setExperience={setEditingExp}
           onSuccess={fetchExperiences}

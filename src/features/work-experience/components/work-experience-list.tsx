@@ -1,25 +1,32 @@
-import { useEffect, useRef } from "react";
+// ponytail: responsive orchestrator - pinned timeline on desktop, vertical list otherwise
 import { useQuery } from "@tanstack/react-query";
 import { Effect } from "effect";
 import type { WorkExperience } from "../types";
 import { getWorkExperiences } from "../api";
 import { Skeleton } from "@/shared/ui/skeleton";
 import FoldText from "@/shared/ui/fold-text";
-import { gsap } from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { ArrowRight } from "lucide-react";
+import { useWorkExperienceView } from "../hooks/use-work-experience-view";
+import { WorkExperienceStage } from "./work-experience-stage";
+import { WorkExperienceVerticalList } from "./work-experience-vertical-list";
 
-gsap.registerPlugin(ScrollTrigger);
-
-const formatDate = (dateStr?: string | null) => {
-  if (!dateStr) return "Present";
-  const date = new Date(dateStr);
-  if (isNaN(date.getTime())) return dateStr;
-  return date.toLocaleDateString("en-US", { month: "short", year: "numeric" });
-};
+function ExperienceHeader() {
+  return (
+    <div className="grid grid-cols-1 gap-x-1 gap-y-4 md:grid-cols-2">
+      <p className="text-lg tracking-[-0.64px] text-black md:sticky md:top-4 md:self-start">
+        <FoldText text="Experience" />
+      </p>
+      <div>
+        <p className="text-sm leading-relaxed text-gray-500">
+          <FoldText text="Where I've worked and what I did there." splitBy="word" />
+        </p>
+      </div>
+    </div>
+  );
+}
 
 export function WorkExperienceList() {
-  const containerRef = useRef<HTMLDivElement>(null);
+  const { isDesktop, reducedMotion, activeIndex, setActiveIndex } =
+    useWorkExperienceView();
 
   const { data, isLoading, isError } = useQuery<{
     experiences: WorkExperience[];
@@ -30,58 +37,29 @@ export function WorkExperienceList() {
 
   const experiences = data?.experiences ?? [];
 
-  useEffect(() => {
-    if (experiences.length === 0) return;
-
-    const ctx = gsap.context(() => {
-      const items = gsap.utils.toArray("[data-work-card]") as Element[];
-      items.forEach((card) => {
-        gsap.from(card as gsap.TweenTarget, {
-          opacity: 0,
-          y: 18,
-          duration: 0.6,
-          scrollTrigger: {
-            trigger: card,
-            start: "top 85%",
-            toggleActions: "play none none none",
-          },
-        });
-      });
-    }, containerRef);
-
-    return () => ctx.revert();
-  }, [experiences]);
-
   if (isLoading) {
     return (
       <section
         id="experience"
-        className="px-4 py-16 md:py-24 border-t border-gray-100"
+        className="border-t border-gray-100 px-4 py-16 md:py-24"
       >
-        <div className="max-w-5xl mx-auto">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-x-1 gap-y-4 mb-6 md:mb-8">
-            <p className="md:sticky md:self-start md:top-4 text-lg tracking-[-0.64px] text-black">
-              Experience
-            </p>
-            <div>
-              <p className="text-sm leading-relaxed text-gray-500">
-                Where I&apos;ve worked and what I did there.
-              </p>
-            </div>
+        <div className="mx-auto max-w-5xl">
+          <div className="mb-6 md:mb-8">
+            <ExperienceHeader />
           </div>
           <div className="space-y-0 divide-y divide-gray-100">
             {Array.from({ length: 4 }).map((_, i) => (
               <div key={i} className="py-6 first:pt-0 last:pb-0">
-                <div className="flex flex-col sm:flex-row sm:items-start gap-3 sm:gap-4">
-                  <div className="flex items-center gap-3 sm:w-48 shrink-0">
-                    <Skeleton className="w-10 h-10 rounded-full shrink-0" />
+                <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:gap-4">
+                  <div className="flex shrink-0 items-center gap-3 sm:w-48">
+                    <Skeleton className="h-10 w-10 shrink-0 rounded-full" />
                     <div className="flex flex-col gap-2">
                       <Skeleton className="h-4 w-24" />
                       <Skeleton className="h-3 w-32" />
                     </div>
                   </div>
-                  <div className="flex-1 min-w-0 sm:pl-4">
-                    <Skeleton className="h-4 w-full mb-2" />
+                  <div className="min-w-0 flex-1 sm:pl-4">
+                    <Skeleton className="mb-2 h-4 w-full" />
                     <Skeleton className="h-4 w-4/5" />
                   </div>
                 </div>
@@ -97,18 +75,11 @@ export function WorkExperienceList() {
     return (
       <section
         id="experience"
-        className="px-4 py-16 md:py-24 border-t border-gray-100"
+        className="border-t border-gray-100 px-4 py-16 md:py-24"
       >
-        <div className="max-w-5xl mx-auto">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-x-1 gap-y-4 mb-6 md:mb-8">
-            <p className="md:sticky md:self-start md:top-4 text-lg tracking-[-0.64px] text-black">
-              Experience
-            </p>
-            <div>
-              <p className="text-sm leading-relaxed text-gray-500">
-                Where I&apos;ve worked and what I did there.
-              </p>
-            </div>
+        <div className="mx-auto max-w-5xl">
+          <div className="mb-6 md:mb-8">
+            <ExperienceHeader />
           </div>
           <p className="text-sm text-gray-400">
             <FoldText
@@ -121,95 +92,28 @@ export function WorkExperienceList() {
     );
   }
 
+  const showStage = isDesktop && !reducedMotion;
+
   return (
-    <section
-      id="experience"
-      ref={containerRef}
-      className="px-4 py-16 md:py-24 border-t border-gray-100"
-    >
-      <div className="max-w-5xl mx-auto">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-x-1 gap-y-4 mb-6 md:mb-8">
-          <p className="md:sticky md:self-start md:top-4 text-lg tracking-[-0.64px] text-black">
-            <FoldText text="Experience" />
-          </p>
-          <div>
-            <p className="text-sm leading-relaxed text-gray-500">
-              <FoldText
-                text="Where I've worked and what I did there."
-                splitBy="word"
-              />
-            </p>
-          </div>
-        </div>
-
-        <div className="space-y-0 divide-y divide-gray-100">
-          {experiences.map((exp) => (
-            <div
-              key={exp.id}
-              className="group py-6 first:pt-0 last:pb-0"
-              data-work-card
-            >
-              <div className="flex flex-col sm:flex-row sm:items-start gap-3 sm:gap-4">
-                <div className="flex items-center gap-3 sm:w-48 shrink-0">
-                  {exp.company_url ? (
-                    <img
-                      src={exp.company_url}
-                      alt={exp.title}
-                      className="w-10 h-10 rounded-full object-contain border border-gray-200 bg-gray-50 p-1 shrink-0"
-                    />
-                  ) : (
-                    <div className="w-10 h-10 rounded-lg border border-gray-200 bg-gray-50 flex items-center justify-center shrink-0">
-                      <span className="text-xs font-bold text-gray-400">
-                        {exp.title.charAt(0)}
-                      </span>
-                    </div>
-                  )}
-                  <div className="flex flex-col">
-                    <span className="text-sm font-medium text-[#111111]">
-                      {exp.title}
-                    </span>
-                    <span className="text-xs text-neutral-400">
-                      {formatDate(exp.start_date)} – {formatDate(exp.end_date)}
-                    </span>
-                  </div>
-                </div>
-
-                <div className="flex-1 min-w-0 sm:pl-4">
-                  <p className="text-sm text-neutral-400 leading-relaxed">
-                    {exp.description}
-                  </p>
-
-                  {exp.job_descriptions && exp.job_descriptions.length > 0 && (
-                    <ul className="mt-3 space-y-1.5">
-                      {exp.job_descriptions.map((desc) => (
-                        <li
-                          key={desc.id}
-                          className="flex gap-2 text-sm text-gray-400 leading-relaxed"
-                        >
-                          <span className="mt-1.5 w-1 h-1 rounded-full bg-gray-300 shrink-0" />
-                          <span>{desc.description}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  )}
-
-                  {exp.redirect_url && (
-                    <a
-                      href={exp.redirect_url}
-                      target="_blank"
-                      rel="noreferrer"
-                      className="flex justify-center items-center w-fit gap-1 mt-3 text-xs rounded-full px-4 py-2 border border-neutral-200 hover:bg-neutral-100 duration-300 underline underline-offset-4 text-neutral-400 hover:text-[#111111] transition-colors"
-                    >
-                      <span>Visit company</span>
-                      <ArrowRight size={12} />
-                    </a>
-                  )}
-                </div>
-              </div>
-            </div>
-          ))}
+    <section id="experience" className="border-t border-gray-100">
+      <div className="mx-auto max-w-5xl px-4 pt-16 md:pt-24">
+        <div className="mb-6 md:mb-8">
+          <ExperienceHeader />
         </div>
       </div>
+
+      {showStage ? (
+        <WorkExperienceStage
+          experiences={experiences}
+          activeIndex={activeIndex}
+          onActiveChange={setActiveIndex}
+          enabled={showStage}
+        />
+      ) : (
+        <div className="mx-auto max-w-5xl px-4 pb-16 md:pb-24">
+          <WorkExperienceVerticalList experiences={experiences} />
+        </div>
+      )}
     </section>
   );
 }

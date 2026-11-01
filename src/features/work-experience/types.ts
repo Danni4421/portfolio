@@ -4,6 +4,12 @@ export interface WorkExperienceJobDesc {
   description: string;
 }
 
+export interface WorkExperienceImage {
+  id: string;
+  work_experience_id: string;
+  image_url: string;
+}
+
 export interface WorkExperience {
   id: string;
   title: string;
@@ -13,4 +19,5 @@ export interface WorkExperience {
   start_date: string;
   end_date?: string | null;
   job_descriptions: WorkExperienceJobDesc[];
+  images?: WorkExperienceImage[];
 }
